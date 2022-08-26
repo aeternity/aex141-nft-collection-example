@@ -7,7 +7,7 @@ This repository will guide you through all the steps required to create an NFT c
 The example demonstrates the usage of following extensions:
 - `mintable`
 
-It is planned to introduce a new extension `collection_map_metadata` which reflects this example and defines how to deal with collection specific metadata.
+It is planned to introduce a new extension `mapped_metadata` which reflects this example and defines how to deal with collection specific metadata.
 
 ## Dealing with metadata
 
@@ -24,7 +24,7 @@ The `meta_info` specifies general info about the NFT collection:
 - `metadata_type` the metadata type to use
     - one of `URL`, `IPFS`, `OBJECT_ID`, `MAP`
 
-### Extension `collection_map_metadata`
+### Extension `mapped_metadata`
 This example provides the first proposal how to deal with metadata for commonly known NFT collections and uses the metadata_type `MAP` specified in AEX-141. Following keys and possible values are proposed:
 
 - `name` the name of the NFT
