@@ -40,7 +40,7 @@ export default {
       const contract = await aeSdk.getContractInstance({
         source: MintableMutableNFT,
         contractAddress:
-          "ct_2tw26RwgNADrpuCnrQWKPBH87bPxuRbLR1KLccS9ZJTUMMj4z8",
+          "ct_267ve7j3KDaSVdzcF8TsyuVKrWm4Zqqve9dmgeVJh9PrKpkG4k",
         fileSystem: {
           "core/utils.aes": CoreUtils,
           "core/IAEX141NFTReceiver.aes": CoreIAEX141NFTReceiver,

@@ -89,51 +89,51 @@ The output then should look as follows:
 ```
 Deploying with account: ak_QVSUoGrJ31CVxWpvgvwQ7PUPFgnvWQouUgsDBVoGjuT7hjQYW
 ==> Adding include to filesystem: core/utils.aes
-==> Adding include to filesystem: core/interfaces.aes
+==> Adding include to filesystem: core/IAEX141NFTReceiver.aes
 Contract successfully deployed!
-Contract address: ct_2tw26RwgNADrpuCnrQWKPBH87bPxuRbLR1KLccS9ZJTUMMj4z8
-Tx-Hash: th_2vXnGY3GB7ieWRYAXiiEzFJNtn5WbMSVoLEsagEuUn9bgi1vHe
+Contract address: ct_267ve7j3KDaSVdzcF8TsyuVKrWm4Zqqve9dmgeVJh9PrKpkG4k
+Tx-Hash: th_NNmWbcx8tYedmpYhiEXZNvNaEDuYASMaBjSA6bYhaL3yadgqV
 Gas used: 974
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
-Minted 'Walking on the ladder' with id '1'
-Tx-Hash: th_2d5iaRa2DkgJb6ABSt5ea6TcM1FVB2EW6dx7FRU9XMWi1J4n9e
-Gas used: 14499
+Minted '"Walking on the ladder"' with id '1'
+Tx-Hash: th_2hTP9m6NNCmDZqjcM7LQSAzLCaPW4TphHnG7Ln4PQxHxzdbZVb
+Gas used: 14642
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
-Minted 'The path to heaven' with id '2'
-Tx-Hash: th_BPiUgq2aqm7rTmhb68DW2vEhReWda3mioxeFBjPfxGtLnkAtg
-Gas used: 14615
+Minted '"The path to heaven"' with id '2'
+Tx-Hash: th_2b9dUKz2KNxmZXvnPc86urDWoCsvoaQMVsuANiFYf63DbYLK9d
+Gas used: 14763
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
-Minted 'Still sitting in the jungle' with id '3'
-Tx-Hash: th_2KummuRWbQVPv6vitcQg1ymUiQ731GvFYMPKYxCNMF4GYqDeeH
-Gas used: 14925
+Minted '"Still sitting in the jungle"' with id '3'
+Tx-Hash: th_2uyiS7bEHK6N3mHm2yEhHAJiTJJjaQL5nsgqGV85AHtGbVobAd
+Gas used: 15073
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
-Minted 'We almost made it!' with id '4'
-Tx-Hash: th_bSmhMu9zba3t9mwZf4ts1a9Rks7mDxcMRriR4mA1DPfwGgiXs
-Gas used: 14555
+Minted '"We almost made it!"' with id '4'
+Tx-Hash: th_z9jTMvnbws1mLLafNkECRu2xD5KuBY88Q3LyNCr885WUL3vV5
+Gas used: 14698
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
-Minted 'I'm in!' with id '5'
-Tx-Hash: th_bwWPhicZjxgP7BRSjoXgT6dzWzkWBNFZEAPTws8se5nMdwPzy
-Gas used: 14547
+Minted '"I'm in!"' with id '5'
+Tx-Hash: th_2i1GM5Wppvf5XCMxfqZhRHXwWGiFC8AntA9buWyE6RXbCfzAmj
+Gas used: 14696
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
-Minted 'Utopia is there!' with id '6'
-Tx-Hash: th_2TS1NCorq9yDSjDEYSBMwqPhRMCAPbgPZzmoGQzTXj2YFMPvcY
-Gas used: 14720
+Minted '"Utopia is there!"' with id '6'
+Tx-Hash: th_NN38skbgC9xUCRWXEwVfmKJ7FSuNC6Cmkub29TGGy19NkMgLv
+Gas used: 14868
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
-Minted 'Waiting for my homies!' with id '7'
-Tx-Hash: th_2B3V6r33XxkEX5JfgjiFTjWUSeYEukmVzJLrjo8dheMZXniqb3
-Gas used: 14855
+Minted '"Waiting for my homies!"' with id '7'
+Tx-Hash: th_2wBAGk85RuC1ZmkRRLiEF31ACQtcgkiaE7UYoMXtgyuXyS1xyC
+Gas used: 14998
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
-Minted 'There is no way back!' with id '8'
-Tx-Hash: th_k67Jg5pUNtAeVzDc28ScDMH3dh96cqWs64ihBjf5wpYZS9Nn7
-Gas used: 14942
+Minted '"There is no way back!"' with id '8'
+Tx-Hash: th_2JUMAbCGvM6pjp7seNT1QiCipQCm7RufgLrBwG4GFCuxqESbwX
+Gas used: 15086
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
 ```
@@ -141,7 +141,7 @@ Gas used: 14942
 ## Simple-NFT-Viewer
 This repository also provides you an example frontend, the [Simple-NFT-Viewer](./simple-nft-viewer) which is written in Vue.js.
 
-It fetches the NFT metadata from contract [ct_2tw26RwgNADrpuCnrQWKPBH87bPxuRbLR1KLccS9ZJTUMMj4z8](https://explorer.testnet.aeternity.io/contracts/transactions/ct_2tw26RwgNADrpuCnrQWKPBH87bPxuRbLR1KLccS9ZJTUMMj4z8) and displays:
+It fetches the NFT metadata from contract [ct_267ve7j3KDaSVdzcF8TsyuVKrWm4Zqqve9dmgeVJh9PrKpkG4k](https://explorer.testnet.aeternity.io/contracts/transactions/ct_267ve7j3KDaSVdzcF8TsyuVKrWm4Zqqve9dmgeVJh9PrKpkG4k) and displays:
  - Name of the NFT collection
  - Name, Description and Image of all NFTs
 

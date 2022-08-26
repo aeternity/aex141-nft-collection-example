@@ -59,10 +59,12 @@ describe('MintableMutableNFT', () => {
 
   it('NFT: mint apes', async () => {
     const address = await accounts[0].address();
+    // needed was we want to stringify objects defined in immutable_attributes and mutable_attributes
+    const nftMetadataMapStringValues = new Array();
     // mint all nfts
     for(let i=0; i<collectionMetadata.nfts.length; i++) {
-      const nftMetadataMapStringValues = new Map(Object.entries(collectionMetadata.nfts[i]).map(([k, v]) => [k, String(v)]));
-      const token = await contract.methods.mint(address, {'MetadataMap': [nftMetadataMapStringValues]}, { onAccount: accounts[0] });
+      nftMetadataMapStringValues[i] = new Map(Object.entries(collectionMetadata.nfts[i]).map(([k, v]) => [k, JSON.stringify(v)]));
+      const token = await contract.methods.mint(address, {'MetadataMap': [nftMetadataMapStringValues[i]]}, { onAccount: accounts[0] });
       assert.equal(token.decodedEvents[0].name, 'Transfer');
       assert.equal(token.decodedEvents[0].args[0].substring(2), contract.deployInfo.address.substring(2));
       assert.equal(token.decodedEvents[0].args[1], address);
@@ -70,20 +72,15 @@ describe('MintableMutableNFT', () => {
     }
     // check amount of NFTs of the owner / minter
     const nftBalance = await contract.methods.balance(address);
-    assert.equal(nftBalance.decodedResult, collectionMetadata.nfts.length);
+    assert.equal(nftBalance.decodedResult, 8);
     // expect metadata for NFT with id "0" to be not existent as we start counting with id "1"
     let nftMetadata = await contract.methods.metadata(0);
     assert.equal(nftMetadata.decodedResult, undefined);
     // expect metadata for NFT with id "1" to equal the metadata of the first minted NFT
     nftMetadata = await contract.methods.metadata(1);
-    assert.deepEqual(JSON.stringify(nftMetadata.decodedResult.MetadataMap[0]), JSON.stringify(jsonToMap(collectionMetadata.nfts[0])));
+    assert.deepEqual(nftMetadata.decodedResult.MetadataMap[0], nftMetadataMapStringValues[0]);
     // expect metadata for NFT with last id to equal the metadata of the last minted NFT
-    const lastId = collectionMetadata.nfts.length - 1;
-    nftMetadata = await contract.methods.metadata(lastId);
-    assert.deepEqual(JSON.stringify(nftMetadata.decodedResult.MetadataMap[0]), JSON.stringify(jsonToMap(collectionMetadata.nfts[lastId])));
+    nftMetadata = await contract.methods.metadata(collectionMetadata.nfts.length);
+    assert.deepEqual(nftMetadata.decodedResult.MetadataMap[0], nftMetadataMapStringValues[collectionMetadata.nfts.length - 1]);
   });
 });
-
-function jsonToMap(nftMetadata) {
-  return new Map(Object.entries(nftMetadata));
-}
