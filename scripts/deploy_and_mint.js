@@ -53,7 +53,7 @@ const collectionMetadata = require('../nfts/collection_metadata.json');
 
     // mint
     for(let i=0; i<collectionMetadata.nfts.length; i++) {
-        const nftMetadataMapStringValues = new Map(Object.entries(collectionMetadata.nfts[i]).map(([k, v]) => [k, JSON.stringify(v)]));
+        const nftMetadataMapStringValues = new Map(Object.entries(collectionMetadata.nfts[i]).map(([k, v]) => [k, typeof v === 'object' ? JSON.stringify(v) : v]));
         const tx = await contract.methods.mint(
             senderAddress,
             {'MetadataMap': [nftMetadataMapStringValues]}
