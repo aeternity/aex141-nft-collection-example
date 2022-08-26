@@ -4,7 +4,7 @@ include "List.aes"
 include "Option.aes"
 include "String.aes"
 include "core/utils.aes"
-include "core/interfaces.aes"
+include "core/IAEX141NFTReceiver.aes"
 
 contract MintableMutableNFT =
 
