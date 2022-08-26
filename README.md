@@ -138,5 +138,12 @@ Gas used: 14942
 ------------------------------------------------------------------------------------------
 ```
 
+## Simple-NFT-Viewer
+This repository also provides you an example frontend, the [Simple-NFT-Viewer](./simple-nft-viewer) which is written in Vue.js.
+
+It fetches the NFT metadata from contract [ct_2tw26RwgNADrpuCnrQWKPBH87bPxuRbLR1KLccS9ZJTUMMj4z8](https://explorer.testnet.aeternity.io/contracts/transactions/ct_2tw26RwgNADrpuCnrQWKPBH87bPxuRbLR1KLccS9ZJTUMMj4z8) and displays:
+ - Name of the NFT collection
+ - Name, Description and Image of all NFTs
+
 ## Congratulations
 Now you know everything to get started with minting your own and unique NFT collection on the æternity blockhain :-)

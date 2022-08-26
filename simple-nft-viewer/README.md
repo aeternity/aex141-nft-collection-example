@@ -1,4 +1,4 @@
-# aex141-nft-collection-aepp-example
+# simple-nft-viewer
 
 ## Project setup
 ```

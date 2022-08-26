@@ -5,7 +5,7 @@
   <div v-for="nft in nfts" :key="nft.name" class="nft">
     <h2>{{ nft.name }}</h2>
     <h3>{{ nft.description }}</h3>
-    <img :alt="nft.description" :src="nft.image_url" />
+    <img :alt="nft.description" :src="nft.image_url" width="300" />
   </div>
 </template>
 
