@@ -11,7 +11,7 @@
 
 <script>
 import { AeSdk, Node } from "@aeternity/aepp-sdk";
-import MintableMutableNFT from "@/assets/contracts/MintableMutableNFT.aes";
+import MintableMappedMetadataNFT from "@/assets/contracts/MintableMappedMetadataNFT.aes";
 import CoreUtils from "@/assets/contracts/core/utils.aes";
 import CoreIAEX141NFTReceiver from "@/assets/contracts/core/IAEX141NFTReceiver.aes";
 
@@ -38,8 +38,8 @@ export default {
     async initContract() {
       const aeSdk = this.initSdk();
       const contract = await aeSdk.getContractInstance({
-        source: MintableMutableNFT,
-        contractAddress: "ct_7oGmkvxzYXR2Pypvf5Pbj3x3VSmB8SwQgii1uScy9jAWWurL5",
+        source: MintableMappedMetadataNFT,
+        contractAddress: "ct_Fv9d66QTjr4yon9GEuMRc2B5y7Afy4to1ATaoYmpUTbN6DYiP",
         fileSystem: {
           "core/utils.aes": CoreUtils,
           "core/IAEX141NFTReceiver.aes": CoreIAEX141NFTReceiver,

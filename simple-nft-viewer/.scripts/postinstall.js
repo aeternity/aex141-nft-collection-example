@@ -2,13 +2,13 @@ const fs = require("fs");
 
 fs.mkdirSync(__dirname + "/../src/assets/contracts/core/", { recursive: true });
 
-const MintableMutableNFT = fs.readFileSync(
-  __dirname + "/../../contracts/MintableMutableNFT.aes",
+const MintableMappedMetadataNFT = fs.readFileSync(
+  __dirname + "/../../contracts/MintableMappedMetadataNFT.aes",
   "utf-8"
 );
 fs.writeFileSync(
-  __dirname + "/../src/assets/contracts/MintableMutableNFT.aes.js",
-  `module.exports = \`\n${MintableMutableNFT.replace(/`/g, "\\`")}\`;\n`,
+  __dirname + "/../src/assets/contracts/MintableMappedMetadataNFT.aes.js",
+  `module.exports = \`\n${MintableMappedMetadataNFT.replace(/`/g, "\\`")}\`;\n`,
   "utf-8"
 );
 
