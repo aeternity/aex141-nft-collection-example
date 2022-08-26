@@ -91,48 +91,48 @@ Deploying with account: ak_QVSUoGrJ31CVxWpvgvwQ7PUPFgnvWQouUgsDBVoGjuT7hjQYW
 ==> Adding include to filesystem: core/utils.aes
 ==> Adding include to filesystem: core/IAEX141NFTReceiver.aes
 Contract successfully deployed!
-Contract address: ct_7oGmkvxzYXR2Pypvf5Pbj3x3VSmB8SwQgii1uScy9jAWWurL5
-Tx-Hash: th_v3CpCeLGQ8rJhBhdrHoskVcYctBfEWU49r1HLNnHJdkq814MT
+Contract address: ct_Fv9d66QTjr4yon9GEuMRc2B5y7Afy4to1ATaoYmpUTbN6DYiP
+Tx-Hash: th_inWugTmZ4jZkpcGynLRUcYP4UKU18HzbvR9ZsrFbhjENR8wr2
 Gas used: 974
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
 Minted 'Walking on the ladder' with id '1'
-Tx-Hash: th_2kjykNuExNMhcUK9m36ZipMNyphg8DXeCkJrYZgVVfGHqhJTWp
+Tx-Hash: th_Bcnnz6S9LjQTzUXsMLdQiyDUhom6JMhHeLMCcWfKHRUrameCu
 Gas used: 14600
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
 Minted 'The path to heaven' with id '2'
-Tx-Hash: th_2nQLVADE27YHppRJoeQTXefMBrzQN4qqBNUan99JajNeLXS9WT
+Tx-Hash: th_jTyNs2mwjzVAi5YciSteYytkMV93A9zPLp4WUhT7x3vb95yFi
 Gas used: 14721
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
 Minted 'Still sitting in the jungle' with id '3'
-Tx-Hash: th_hPPTPnVA9hj6xeJAfifeRd4mMxxWjbu339rKAtcBBdrpzyFBr
+Tx-Hash: th_SmGUY25TacpXrYFFkkCoiM44gFaD55Seu4sjPQ785eVabkQZ5
 Gas used: 15031
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
 Minted 'We almost made it!' with id '4'
-Tx-Hash: th_AEQ6YqQHdZMKshC14au1RnXn5QJ3mi6hGX8aWzmGymav3g1ow
+Tx-Hash: th_2vK8XKnkkihwzqCGWT3FftzgB2coq7RsvoP6pM2qoaPFbS39HX
 Gas used: 14656
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
 Minted 'I'm in!' with id '5'
-Tx-Hash: th_CUSZLm2onzQWMZLgFHy5zLvJLon6nFYcJqmp5nGfaNzu7d1di
+Tx-Hash: th_2Muesc4V8NwicK64uEm6tJ2atcZfgpkZmU99XfxCnEbdSVakzd
 Gas used: 14653
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
 Minted 'Utopia is there!' with id '6'
-Tx-Hash: th_GiwqeaTprH47181NQj8Nr3L49hU6XSnegyhkzr2Msi5cpcmbd
+Tx-Hash: th_2i8X4cYZs96UKRP18ePYeZ4xm4FiQKg9pm3bDjtMWb7zD7zmFH
 Gas used: 14826
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
 Minted 'Waiting for my homies!' with id '7'
-Tx-Hash: th_ax6yxR66hZXALx72mT4k3qhwcqFYSMqdUERVTNEK2BawzQXXH
+Tx-Hash: th_2HpYnJc9Fz9wuVSK8yMxNV7HzKCvq2r3MfTcGmDBhJND7WHw4z
 Gas used: 14956
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
 Minted 'There is no way back!' with id '8'
-Tx-Hash: th_B92Fx5SLVDAXA6RGLAtgDXxsdVzLHX8Zgw4nXY8WZoBA7M13Q
+Tx-Hash: th_2Set8vkqJH7TUk4P56JT9V8F7mxGBuNAEwssGgNwbPXYC142Ru
 Gas used: 15043
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
@@ -141,7 +141,7 @@ Gas used: 15043
 ## Simple-NFT-Viewer
 This repository also provides you an example frontend, the [Simple-NFT-Viewer](./simple-nft-viewer) which is written in Vue.js.
 
-It fetches the NFT metadata from contract [ct_7oGmkvxzYXR2Pypvf5Pbj3x3VSmB8SwQgii1uScy9jAWWurL5](https://explorer.testnet.aeternity.io/contracts/transactions/ct_7oGmkvxzYXR2Pypvf5Pbj3x3VSmB8SwQgii1uScy9jAWWurL5) and displays:
+It fetches the NFT metadata from contract [ct_Fv9d66QTjr4yon9GEuMRc2B5y7Afy4to1ATaoYmpUTbN6DYiP](https://explorer.testnet.aeternity.io/contracts/transactions/ct_Fv9d66QTjr4yon9GEuMRc2B5y7Afy4to1ATaoYmpUTbN6DYiP) and displays:
  - Name of the NFT collection
  - Name, Description and Image of all NFTs
 

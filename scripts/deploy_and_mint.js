@@ -33,7 +33,7 @@ const collectionMetadata = require('../nfts/collection_metadata.json');
     });
     await aeSdk.addAccount(senderAccount, { select: true });
 
-    const CONTRACT = './contracts/MintableMutableNFT.aes';
+    const CONTRACT = './contracts/MintableMappedMetadataNFT.aes';
     const source = utils.getContractContent(CONTRACT);
     const fileSystem = utils.getFilesystem(CONTRACT);
 

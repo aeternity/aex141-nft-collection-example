@@ -6,12 +6,13 @@ include "String.aes"
 include "core/utils.aes"
 include "core/IAEX141NFTReceiver.aes"
 
-contract MintableMutableNFT =
+contract MintableMappedMetadataNFT =
 
     datatype event 
         = Transfer(address, address, int)
         | Approval(address, address, int, string)
         | ApprovalForAll(address, address, string)
+        // | MutableAttributesUpdated(string, string)
 
     datatype metadata_type = URL | IPFS | OBJECT_ID | MAP
     datatype metadata = MetadataIdentifier(string) | MetadataMap(map(string, string))
@@ -52,14 +53,14 @@ contract MintableMutableNFT =
             Some(v) =>
                 // TODO ensure that only MetadataMap can be used as metadata
                 let token_id = state.counter
-                put( state { counter = state.counter + 1, balances[owner = 0] @ b = b + 1, owners[token_id] = owner, metadata[token_id] = v } )
+                put(state{counter = state.counter + 1, balances[owner = 0] @ b = b + 1, owners[token_id] = owner, metadata[token_id] = v})
                 switch(invoke_nft_receiver(Contract.address, owner, token_id, data))
                     (true, false) => abort("SAFE_TRANSFER_FAILED")
                     _ => Chain.event(Transfer(Contract.address, owner, token_id))
                 token_id
 
     entrypoint aex141_extensions() : list(string) =
-        ["mintable"]
+        ["mintable", "mapped_metadata"]
 
     entrypoint meta_info() : meta_info = 
         state.meta_info
@@ -85,7 +86,7 @@ contract MintableMutableNFT =
     stateful entrypoint approve(approved: address, token_id: int, enabled: bool) : unit =
         require_authorized(token_id)
         if(enabled)
-            put( state { approvals[token_id] = approved })
+            put(state{approvals[token_id] = approved})
         else
             remove_approval(token_id)
         Chain.event(Approval(Call.caller, approved, token_id, Utils.bool_to_string(enabled)))
@@ -109,6 +110,20 @@ contract MintableMutableNFT =
                 switch(Map.lookup(operator, ops))
                     None => false
                     Some(v) => v
+
+    stateful entrypoint update_mutable_attributes(token_id: int, mutable_attributes: string) =
+        require_contract_owner()
+        switch(Map.lookup(token_id, state.metadata))
+            None =>
+                abort("METADATA_DOES_NOT_EXIST") // this case should never happen
+            Some(v) =>
+                // let old_metadata_map = state.metadata[token_id]
+                let updated_metadata_map =
+                    switch(v)
+                        MetadataMap(v) => MetadataMap(v{["mutable_attributes"]=mutable_attributes})
+                        MetadataIdentifier(v) => abort("ERROR_CORRUPT_METADATA")
+                put(state{metadata = state.metadata{[token_id]=updated_metadata_map}})
+                // Chain.event(MutableAttributesUpdated(old_metadata_map["mutable_attributes"], updated_metadata_map["mutable_attributes"]))
 
     function is_token_owner(token_id: int, a: address) : bool =
         switch(Map.lookup(token_id, state.owners))
