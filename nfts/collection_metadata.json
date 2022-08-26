@@ -1,0 +1,110 @@
+{
+    "name": "Apes stepping into the Metaverse",
+    "symbol": "ASITM",
+    "nfts": [
+        {
+            "name": "Walking on the ladder",
+            "description": "They are escaping from earth and stepping into the metaverse!",
+            "media_type": "IMAGE",
+            "media_url": "ipfs://QmfCr586aHFVk6p2WhTC1Kvcaps24Mtny2CLB5bsTT9MvZ",
+            "immutable_attributes": {
+                "apes_count": 2,
+                "moon_visible": true
+            },
+            "mutable_attributes": {
+                "retries": 0
+            }
+        },
+        {
+            "name": "The path to heaven",
+            "description": "Heaven or metaverse? We don't care!",
+            "media_type": "IMAGE",
+            "media_url": "ipfs://Qmef7Xrh1YTgQqXbr86o3TrFoya9ZLk1RVdXMga1JjEjnm",
+            "immutable_attributes": {
+                "apes_count": 3,
+                "moon_visible": false
+            },
+            "mutable_attributes": {
+                "retries": 0
+            }
+        },
+        {
+            "name": "Still sitting in the jungle",
+            "description": "The metaverse is far away :-(",
+            "media_type": "IMAGE",
+            "media_url": "ipfs://QmcejQwXNuQ2TZANibaYzcCHD8h9cY1pNodWmfzCo1F65M",
+            "immutable_attributes": {
+                "apes_count": 4,
+                "moon_visible": false
+            },
+            "mutable_attributes": {
+                "retries": 0
+            }
+        },
+        {
+            "name": "We almost made it!",
+            "description": "The rainbow shows the way!",
+            "media_type": "IMAGE",
+            "media_url": "ipfs://QmQr6BwcPKDUegCqZfvyzHAbZTekUP1qxZo9jTZ7GnBgoM",
+            "immutable_attributes": {
+                "apes_count": 2,
+                "moon_visible": true
+            },
+            "mutable_attributes": {
+                "retries": 0
+            }
+        },
+        {
+            "name": "I'm in!",
+            "description": "There is no way back!",
+            "media_type": "IMAGE",
+            "media_url": "ipfs://QmeiDVb286LCpB7yMNqSR83asubqzgu7mNmH66XBxDSL88",
+            "immutable_attributes": {
+                "apes_count": 1,
+                "moon_visible": false
+            },
+            "mutable_attributes": {
+                "retries": 0
+            }
+        },
+        {
+            "name": "Utopia is there!",
+            "description": "Chilling between the rocks ...",
+            "media_type": "IMAGE",
+            "media_url": "ipfs://QmRbGniYYuVHDZvuf3CRJEogmi32znVGMdQwsarzrWwjZi",
+            "immutable_attributes": {
+                "apes_count": 3,
+                "moon_visible": false
+            },
+            "mutable_attributes": {
+                "retries": 0
+            }
+        },
+        {
+            "name": "Waiting for my homies!",
+            "description": "They have no idea what's happening.",
+            "media_type": "IMAGE",
+            "media_url": "ipfs://QmWXZp5oZb6VkJm95MMpNHWUKaefj8mWvMYrj9FTNPWkz1",
+            "immutable_attributes": {
+                "apes_count": 1,
+                "moon_visible": true
+            },
+            "mutable_attributes": {
+                "retries": 0
+            }
+        },
+        {
+            "name": "There is no way back!",
+            "description": "Nope, return is no option. Sorry apes!",
+            "media_type": "IMAGE",
+            "media_url": "ipfs://QmV8zLF5zBSiKU9go9GXkeCZXeHp7iZQMzpBxnU5eGHSZT",
+            "immutable_attributes": {
+                "apes_count": 2,
+                "moon_visible": true
+            },
+            "mutable_attributes": {
+                "retries": 0
+            }
+        }
+    ]
+}
