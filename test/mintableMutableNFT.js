@@ -86,6 +86,35 @@ describe('MintableMappedMetadataNFT', () => {
       nftMetadata = await contract.methods.metadata(collectionMetadata.nfts.length);
       assert.deepEqual(nftMetadata.decodedResult.MetadataMap[0], nftMetadataMapStringValues[collectionMetadata.nfts.length - 1]);
     });
+
+    it('failed minting', async () => {
+      const address = await accounts[0].address();
+      await expect(
+        contract.methods.mint(address, {'None': []}, { onAccount: accounts[0] }))
+        .to.be.rejectedWith(`Invocation failed: "NO_METADATA_PROVIDED"`);
+      await expect(
+        contract.methods.mint(address, {'MetadataIdentifier': ['fails anyway ...']}, { onAccount: accounts[0] }))
+        .to.be.rejectedWith(`Invocation failed: "NOT_METADATA_MAP"`);
+    });
+
+    it('transfer', async () => {
+      // expect failed transfer
+      const from = await accounts[0].address();
+      await expect(
+        contract.methods.transfer(from, from, 8, { onAccount: accounts[0] }))
+        .to.be.rejectedWith(`Invocation failed: "SENDER_MUST_NOT_BE_RECEIVER"`);
+      
+      // expect successful transfer
+      const to = await accounts[1].address();
+      await contract.methods.transfer(from, to, 8, { onAccount: accounts[0] });
+
+      // check balances after transfer
+      let nftBalance = await contract.methods.balance(from);
+      assert.equal(nftBalance.decodedResult, 7);
+      nftBalance = await contract.methods.balance(to);
+      assert.equal(nftBalance.decodedResult, 1);
+    });
+
     it('update mutable metadata', async () => {
       const current_mutable_attributes = '{"retries":0}';
       const updated_mutable_attributes = '{"retries":1}';
@@ -97,7 +126,7 @@ describe('MintableMappedMetadataNFT', () => {
       // expect error when trying to update mutable attributes with other account than contract owner
       await expect(
         contract.methods.update_mutable_attributes(nftId, updated_mutable_attributes, { onAccount: accounts[1] }))
-        .to.be.rejectedWith(`Invocation failed: "ONLY_CONTRACT_OWNER_CALL_ALLOWED`);
+        .to.be.rejectedWith(`Invocation failed: "ONLY_CONTRACT_OWNER_CALL_ALLOWED"`);
 
       // update mutable attributes
       await contract.methods.update_mutable_attributes(nftId, updated_mutable_attributes);
