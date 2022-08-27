@@ -42,7 +42,7 @@ This example provides the first proposal how to deal with metadata for commonly 
     - mutable attributes are especially interesting for game items, where you can for example collect experience points for the NFTs
     - of course any usecase is possible
 
-## Example collection: Apes stepping into the MetaVerse
+## Example collection: Apes stepping into the Metaverse
 
 For this example we used [DALL-E 2](https://openai.com/dall-e-2) to generate some images based on the text `apes stepping into the metaverse`.
 
