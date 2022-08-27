@@ -1,6 +1,6 @@
 # aex141-nft-collection-example
 
-This repository will guide you through all the steps required to create an NFT collection and mint unique NFTs on the æternity blockchain using the AEX-141 standard.
+This repository will guide you through all the steps required to create an NFT collection and mint unique NFTs on the æternity blockchain using the [AEX-141](https://github.com/aeternity/AEXs/blob/master/AEXS/aex-141.md) standard.
 
 ## Extensions
 
@@ -11,7 +11,7 @@ It is planned to introduce a new extension `mapped_metadata` which reflects this
 
 ## Dealing with metadata
 
-In the AEX-141 standard we aimed to be very flexible when it comes to dealing with metadata.
+In the [AEX-141](https://github.com/aeternity/AEXs/blob/master/AEXS/aex-141.md) standard we aimed to be very flexible when it comes to dealing with metadata.
 
 ### Contract level: `meta_info`
 
