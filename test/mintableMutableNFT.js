@@ -65,7 +65,7 @@ describe('MintableMappedMetadataNFT', () => {
         nftMetadataMapStringValues[i] = new Map(Object.entries(collectionMetadata.nfts[i]).map(([k, v]) => [k, typeof v === 'object' ? JSON.stringify(v) : v]));
         const token = await contract.methods.mint(address, {'MetadataMap': [nftMetadataMapStringValues[i]]}, { onAccount: accounts[0] });
         assert.equal(token.decodedEvents[0].name, 'Transfer');
-        assert.equal(token.decodedEvents[0].args[0].substring(2), contract.deployInfo.address.substring(2));
+        assert.equal(token.decodedEvents[0].args[0], 'ak_11111111111111111111111111111111273Yts');
         assert.equal(token.decodedEvents[0].args[1], address);
         assert.equal(token.decodedEvents[0].args[2], i+1);
       }

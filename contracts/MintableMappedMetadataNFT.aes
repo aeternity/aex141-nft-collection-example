@@ -53,9 +53,10 @@ contract MintableMappedMetadataNFT =
             Some(v) =>
                 let token_id = state.counter
                 put(state{counter = state.counter + 1, balances[owner = 0] @ b = b + 1, owners[token_id] = owner, metadata[token_id] = v})
-                switch(invoke_nft_receiver(Contract.address, owner, token_id, data))
+                let from = ak_11111111111111111111111111111111273Yts
+                switch(invoke_nft_receiver(from, owner, token_id, data))
                     (true, false) => abort("SAFE_TRANSFER_FAILED")
-                    _ => Chain.event(Transfer(Contract.address, owner, token_id))
+                    _ => Chain.event(Transfer(from, owner, token_id))
                 token_id
 
     entrypoint aex141_extensions() : list(string) =
