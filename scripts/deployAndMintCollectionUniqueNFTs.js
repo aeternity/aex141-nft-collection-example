@@ -9,7 +9,7 @@ const shutdown = (varName) => {
 const NODE_URL = 'https://testnet.aeternity.io';
 const COMPILER_URL = 'https://compiler.aeternity.io';
 
-const collectionMetadata = require('../nfts/collection_metadata.json');
+const collectionUniqueMetadata = require('../nfts/collection_unique_nfts.json');
 
 (async function () {
     secretKey = process.env.SECRET_KEY
@@ -33,7 +33,7 @@ const collectionMetadata = require('../nfts/collection_metadata.json');
     });
     await aeSdk.addAccount(senderAccount, { select: true });
 
-    const CONTRACT = './contracts/MintableMappedMetadataNFT.aes';
+    const CONTRACT = './contracts/CollectionUniqueNFTs.aes';
     const source = utils.getContractContent(CONTRACT);
     const fileSystem = utils.getFilesystem(CONTRACT);
 
@@ -41,8 +41,8 @@ const collectionMetadata = require('../nfts/collection_metadata.json');
 
     // deploy
     await contract.deploy([
-        collectionMetadata.name,
-        collectionMetadata.symbol
+        collectionUniqueMetadata.name,
+        collectionUniqueMetadata.symbol
     ]);
     console.log(`Contract successfully deployed!`);
     console.log(`Contract address: ${contract.deployInfo.address}`);
@@ -51,17 +51,18 @@ const collectionMetadata = require('../nfts/collection_metadata.json');
     console.log(`------------------------------------------------------------------------------------------`);
     console.log(`------------------------------------------------------------------------------------------`);
 
-    // mint
-    for(let i=0; i<collectionMetadata.nfts.length; i++) {
-        const nftMetadataMapStringValues = new Map(Object.entries(collectionMetadata.nfts[i]).map(([k, v]) => [k, typeof v === 'object' ? JSON.stringify(v) : v]));
-        const tx = await contract.methods.mint(
-            senderAddress,
-            {'MetadataMap': [nftMetadataMapStringValues]}
-        );
-        console.log(`Minted '${nftMetadataMapStringValues.get('name')}' with id '${tx.decodedResult}'`);
-        console.log(`Tx-Hash: ${tx.hash}`);
-        console.log(`Gas used: ${tx.result.gasUsed}`);
-        console.log(`------------------------------------------------------------------------------------------`);
-        console.log(`------------------------------------------------------------------------------------------`);
-    };
+    const metadataMapAllNFTs = new Array();
+    for(let i=0; i<collectionUniqueMetadata.immutable_metadata_urls.length; i++) {
+      metadataMapAllNFTs.push(new Map([['immutable_metadata_url', collectionUniqueMetadata.immutable_metadata_urls[i]]]))
+    }
+
+    // mint all nfts
+    for(let i=0; i<collectionUniqueMetadata.immutable_metadata_urls.length; i++) {
+      const mintTx = await contract.methods.mint(senderAddress, {'MetadataMap': [metadataMapAllNFTs[i]]}, undefined);
+      console.log(`Minted NFT with id '${mintTx.decodedResult}'`);
+      console.log(`Tx-Hash: ${mintTx.hash}`);
+      console.log(`Gas used: ${mintTx.result.gasUsed}`);
+      console.log(`------------------------------------------------------------------------------------------`);
+      console.log(`------------------------------------------------------------------------------------------`);
+    }
 })()
