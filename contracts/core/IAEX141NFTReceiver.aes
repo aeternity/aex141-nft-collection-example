@@ -1,2 +1,2 @@
 contract interface IAEX141NFTReceiver = 
-    entrypoint on_nft_received : (address, option(string)) => bool
+    entrypoint on_nft_received : (int, option(string)) => bool
