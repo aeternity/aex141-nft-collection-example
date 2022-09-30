@@ -56,13 +56,17 @@ const collectionUniqueMetadata = require('../nfts/collection_unique_nfts.json');
       metadataMapAllNFTs.push(new Map([['immutable_metadata_url', collectionUniqueMetadata.immutable_metadata_urls[i]]]))
     }
 
+    // define nonce individually
+    let nonce = (await aeSdk.api.getAccountNextNonce(senderAddress)).nextNonce
     // mint all nfts
     for(let i=0; i<collectionUniqueMetadata.immutable_metadata_urls.length; i++) {
-      const mintTx = await contract.methods.mint(senderAddress, {'MetadataMap': [metadataMapAllNFTs[i]]}, undefined);
+      const mintTx = await contract.methods.mint(senderAddress, {'MetadataMap': [metadataMapAllNFTs[i]]}, undefined, { nonce });
+      console.log(`Using nonce: ${nonce}`);
       console.log(`Minted NFT with id '${mintTx.decodedResult}'`);
       console.log(`Tx-Hash: ${mintTx.hash}`);
       console.log(`Gas used: ${mintTx.result.gasUsed}`);
       console.log(`------------------------------------------------------------------------------------------`);
       console.log(`------------------------------------------------------------------------------------------`);
+      nonce++;
     }
 })()
