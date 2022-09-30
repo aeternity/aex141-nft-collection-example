@@ -9,8 +9,7 @@ contract interface IAEX141 =
         , metadata_type : metadata_type }
 
     datatype event
-        = Mint(address, int)
-        | Transfer(address, address, int)
+        = Transfer(address, address, int)
         | Approval(address, address, int, string)
         | ApprovalForAll(address, address, string)
 
