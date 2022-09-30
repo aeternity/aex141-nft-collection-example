@@ -78,6 +78,11 @@ Example:
 ## Example 1 - Collection with unique NFTs
 The first example demonstrates how a collection that includes only unique NFTs could look like.
 
+### Contract
+
+The following contract is used for showcasing unique NFTs:
+- [CollectionUniqueNFTs.aes](./contracts/CollectionUniqueNFTs.aes)
+
 ### Extensions
 
 This example demonstrates the usage of following extensions:
@@ -114,6 +119,11 @@ Potentially you can add many more custom key-value pairs if needed. E.g. there i
 
 ## Example 2 - Collection with Edition Size NFTs (Templates)
 The second example demonstrates how a collection of edition size NFTs could look like. This is especially interesting for gaming projects where you want to re-use immutable metadata for a specific type of NFT and still have the flexibility to attach mutable attributes to every single NFT.
+
+### Contract
+
+The following contract is used for showcasing editon size NFTs with templates:
+- [CollectionTemplateEditionNFTs.aes](./contracts/CollectionTemplateEditionNFTs.aes)
 
 ### Extensions
 
