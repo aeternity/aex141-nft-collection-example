@@ -546,4 +546,4 @@ It fetches the NFT metadata from contract [ct_Fv9d66QTjr4yon9GEuMRc2B5y7Afy4to1A
  - Name, Description and Image of all NFTs
 
 ## Congratulations
-Now you know everything to get started with minting your own and unique NFT collection on the æternity blockhain :-)
+Now you know everything to get started with minting your own and unique NFT collection on the æternity blockchain :-)
