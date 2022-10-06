@@ -4,16 +4,16 @@ const chaiAsPromised = require('chai-as-promised');
 
 use(chaiAsPromised);
 
-const CONTRACT_SOURCE = './contracts/CollectionTemplateEditionNFTs.aes';
+const CONTRACT_SOURCE = './contracts/swappable-for-potential-migration/CollectionTemplateEditionSwappableNFTs.aes';
 const RECEIVER_CONTRACT_SOURCE = './test/receiver.aes';
 
-const collectionTemplateData = require('../nfts/collection_templates.json');
+const collectionTemplateData = require('../../nfts/collection_templates.json');
 
 const logGasUsed = (entrypoint, tx) => {
   console.log(`${entrypoint}, gas used: ${tx.result.gasUsed}`)
 }
 
-describe('CollectionTemplateEditionNFTs', () => {
+describe('CollectionTemplateEditionSwappableNFTs', () => {
   let aeSdk;
   let contract;
   let accounts;

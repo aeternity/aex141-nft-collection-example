@@ -33,7 +33,7 @@ const collectionTemplateEditionData = require('../nfts/collection_templates.json
     });
     await aeSdk.addAccount(senderAccount, { select: true });
 
-    const CONTRACT = './contracts/CollectionTemplateEditionNFTs.aes';
+    const CONTRACT = './contracts/recommended/CollectionTemplateEditionNFTs.aes';
     const source = utils.getContractContent(CONTRACT);
     const fileSystem = utils.getFilesystem(CONTRACT);
 

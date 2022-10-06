@@ -4,10 +4,10 @@ const chaiAsPromised = require('chai-as-promised');
 
 use(chaiAsPromised);
 
-const CONTRACT_SOURCE = './contracts/CollectionUniqueNFTs.aes';
+const CONTRACT_SOURCE = './contracts/recommended/CollectionUniqueNFTs.aes';
 const RECEIVER_CONTRACT_SOURCE = './test/receiver.aes';
 
-const collectionUniqueMetadata = require('../nfts/collection_unique_nfts.json');
+const collectionUniqueMetadata = require('../../nfts/collection_unique_nfts.json');
 
 const logGasUsed = (entrypoint, tx) => {
   console.log(`${entrypoint}, gas used: ${tx.result.gasUsed}`)
@@ -47,7 +47,7 @@ describe('CollectionUniqueNFTs', () => {
   describe('NFT collection', async () => {
     it('aex141_extensions', async () => {
       const { decodedResult } = await contract.methods.aex141_extensions();
-      assert.deepEqual(decodedResult, ['mintable', 'burnable', 'swappable']);
+      assert.deepEqual(decodedResult, ['mintable', 'burnable']);
     });
     it('meta_info', async () => {
       const { decodedResult } = await contract.methods.meta_info();
@@ -186,44 +186,6 @@ describe('CollectionUniqueNFTs', () => {
       // check total supply after burn
       const totalSupplyDryRun = await contract.methods.total_supply();
       assert.equal(totalSupplyDryRun.decodedResult, 6);
-    });
-
-    it('failed swap', async () => {
-      await expect(
-        contract.methods.swap({ onAccount: accounts[1] }))
-        .to.be.rejectedWith(`Invocation failed: "NOTHING_TO_SWAP"`);
-      await expect(
-        contract.methods.swap({ onAccount: accounts[2] }))
-        .to.be.rejectedWith(`Invocation failed: "NOTHING_TO_SWAP"`);
-    });
-
-    it('swap', async () => {
-      // swap
-      const swapTx = await contract.methods.swap({ onAccount: accounts[0] });
-      assert.equal(swapTx.decodedEvents.length, 6);
-      const toSwap = new Set([2n,3n,4n,5n,6n,7n]);
-      for(let i=0; i<6; i++) {
-        assert.equal(swapTx.decodedEvents[i].name, 'Swap');
-        assert.equal(swapTx.decodedEvents[i].args[0], await accounts[0].address());
-        assert.isTrue(toSwap.has(swapTx.decodedEvents[i].args[1]));
-      }
-      logGasUsed('swap', swapTx);
-
-      // check balance after swap
-      let balanceDryRun = await contract.methods.balance(await accounts[0].address());
-      assert.equal(balanceDryRun.decodedResult, 0);
-
-      // check_swap for account
-      const checkSwapDryRun = await contract.methods.check_swap(await accounts[0].address());
-      assert.deepEqual(checkSwapDryRun.decodedResult, [2n,3n,4n,5n,6n,7n]);
-
-      // check swapped
-      const swappedDryRun = await contract.methods.swapped();
-      assert.deepEqual(swappedDryRun.decodedResult, new Map([[await accounts[0].address(), new Set([2n,3n,4n,5n,6n,7n])]]));
-
-      // check total supply after swap
-      const totalSupply = await contract.methods.total_supply();
-      assert.equal(totalSupply.decodedResult, 0);
     });
   });
 });

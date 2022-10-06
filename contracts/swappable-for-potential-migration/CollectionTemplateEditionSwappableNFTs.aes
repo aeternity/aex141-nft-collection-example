@@ -4,10 +4,10 @@ include "List.aes"
 include "Option.aes"
 include "Set.aes"
 include "String.aes"
-include "core/utils.aes"
-include "core/IAEX141NFTReceiver.aes"
+include "../core/utils.aes"
+include "../core/IAEX141NFTReceiver.aes"
 
-contract CollectionTemplateEditionNFTs =
+contract CollectionTemplateEditionSwappableNFTs =
 
     datatype event
         = TemplateCreated(int, string, int) // id, immutable_metadata_url, edition_size
