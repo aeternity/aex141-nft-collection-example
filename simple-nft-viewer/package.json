@@ -5,8 +5,7 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint",
-    "postinstall": "node .scripts/postinstall.js"
+    "lint": "vue-cli-service lint"
   },
   "dependencies": {
     "@aeternity/aepp-sdk": "^12.1.3",

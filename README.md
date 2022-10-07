@@ -550,12 +550,11 @@ Gas used: 21256
 ```
 </details>
 
-## Simple-NFT-Viewer (TODO -> update to new exmaples!!!)
-**Note:** still using an old, outdated example to display the NFTs and doesn't work due to changes in the contracts
+## Simple-NFT-Viewer
 
 This repository also provides you an example frontend, the [Simple-NFT-Viewer](./simple-nft-viewer) which is written in Vue.js.
 
-It fetches the NFT metadata from contract [ct_Fv9d66QTjr4yon9GEuMRc2B5y7Afy4to1ATaoYmpUTbN6DYiP](https://explorer.testnet.aeternity.io/contracts/transactions/ct_Fv9d66QTjr4yon9GEuMRc2B5y7Afy4to1ATaoYmpUTbN6DYiP) and displays:
+It fetches the NFT metadata from contract [ct_2uFHX2SYHSepCUUJ9QmDLxfKNDiLrgjbAdvZ2ZhJXVvc4YD1NL](https://explorer.testnet.aeternity.io/contracts/transactions/ct_2uFHX2SYHSepCUUJ9QmDLxfKNDiLrgjbAdvZ2ZhJXVvc4YD1NL) and displays:
  - Name of the NFT collection
  - Name, Description and Image of all NFTs
 

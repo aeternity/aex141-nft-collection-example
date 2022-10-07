@@ -47,7 +47,7 @@
                ],
                "name":"meta_info",
                "payable":false,
-               "returns":"NFT.meta_info",
+               "returns":"IAEX141.meta_info",
                "stateful":false
             },
             {
@@ -61,9 +61,18 @@
                "payable":false,
                "returns":{
                   "option":[
-                     "NFT.metadata"
+                     "IAEX141.metadata"
                   ]
                },
+               "stateful":false
+            },
+            {
+               "arguments":[
+                  
+               ],
+               "name":"total_supply",
+               "payable":false,
+               "returns":"int",
                "stateful":false
             },
             {
@@ -106,14 +115,10 @@
                   },
                   {
                      "name":"_2",
-                     "type":"address"
-                  },
-                  {
-                     "name":"_3",
                      "type":"int"
                   },
                   {
-                     "name":"_4",
+                     "name":"_3",
                      "type":{
                         "option":[
                            "string"
@@ -212,7 +217,7 @@
             }
          ],
          "kind":"contract_main",
-         "name":"NFT",
+         "name":"IAEX141",
          "payable":false,
          "type_defs":[
             {
@@ -221,11 +226,6 @@
                   "variant":[
                      {
                         "URL":[
-                           
-                        ]
-                     },
-                     {
-                        "IPFS":[
                            
                         ]
                      },
@@ -292,7 +292,7 @@
                      },
                      {
                         "name":"metadata_type",
-                        "type":"NFT.metadata_type"
+                        "type":"IAEX141.metadata_type"
                      }
                   ]
                },
@@ -306,5 +306,5 @@
    "externalEncodedAci":[
       
    ],
-   "interface":"main contract NFT =\n  datatype event = Transfer(address, address, int) | Approval(address, address, int, string) | ApprovalForAll(address, address, string)\n  datatype metadata_type = URL | IPFS | OBJECT_ID | MAP\n  datatype metadata = MetadataIdentifier(string) | MetadataMap(map(string, string))\n  record meta_info = {name : string,symbol : string,base_url : option(string),metadata_type : NFT.metadata_type}\n  entrypoint aex141_extensions : () => list(string)\n  entrypoint meta_info : () => NFT.meta_info\n  entrypoint metadata : (int) => option(NFT.metadata)\n  entrypoint balance : (address) => option(int)\n  entrypoint owner : (int) => option(address)\n  stateful entrypoint transfer : (address, address, int, option(string)) => unit\n  stateful entrypoint approve : (address, int, bool) => unit\n  stateful entrypoint approve_all : (address, bool) => unit\n  entrypoint get_approved : (int) => option(address)\n  entrypoint is_approved : (int, address) => bool\n  entrypoint is_approved_for_all : (address, address) => bool\n"
+   "interface":"main contract IAEX141 =\n  datatype event = Transfer(address, address, int) | Approval(address, address, int, string) | ApprovalForAll(address, address, string)\n  datatype metadata_type = URL | OBJECT_ID | MAP\n  datatype metadata = MetadataIdentifier(string) | MetadataMap(map(string, string))\n  record meta_info = {name : string,symbol : string,base_url : option(string),metadata_type : IAEX141.metadata_type}\n  entrypoint aex141_extensions : () => list(string)\n  entrypoint meta_info : () => IAEX141.meta_info\n  entrypoint metadata : (int) => option(IAEX141.metadata)\n  entrypoint total_supply : () => int\n  entrypoint balance : (address) => option(int)\n  entrypoint owner : (int) => option(address)\n  stateful entrypoint transfer : (address, int, option(string)) => unit\n  stateful entrypoint approve : (address, int, bool) => unit\n  stateful entrypoint approve_all : (address, bool) => unit\n  entrypoint get_approved : (int) => option(address)\n  entrypoint is_approved : (int, address) => bool\n  entrypoint is_approved_for_all : (address, address) => bool\n"
 }

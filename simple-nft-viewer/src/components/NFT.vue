@@ -11,9 +11,11 @@
 
 <script>
 import { AeSdk, Node } from "@aeternity/aepp-sdk";
-import MintableMappedMetadataNFT from "@/assets/contracts/MintableMappedMetadataNFT.aes";
-import CoreUtils from "@/assets/contracts/core/utils.aes";
-import CoreIAEX141NFTReceiver from "@/assets/contracts/core/IAEX141NFTReceiver.aes";
+const aex141Aci = require("../aex141Aci.json");
+
+function sleep(time) {
+  return new Promise((resolve) => setTimeout(resolve, time));
+}
 
 export default {
   name: "NFT",
@@ -38,12 +40,9 @@ export default {
     async initContract() {
       const aeSdk = this.initSdk();
       const contract = await aeSdk.getContractInstance({
-        source: MintableMappedMetadataNFT,
-        contractAddress: "ct_Fv9d66QTjr4yon9GEuMRc2B5y7Afy4to1ATaoYmpUTbN6DYiP",
-        fileSystem: {
-          "core/utils.aes": CoreUtils,
-          "core/IAEX141NFTReceiver.aes": CoreIAEX141NFTReceiver,
-        },
+        aci: aex141Aci,
+        contractAddress:
+          "ct_2uFHX2SYHSepCUUJ9QmDLxfKNDiLrgjbAdvZ2ZhJXVvc4YD1NL",
       });
 
       this.metaInfo = await contract.methods
@@ -55,13 +54,23 @@ export default {
           const { decodedResult: metadata } = await contract.methods.metadata(
             i + 1
           );
+          const nft_immutable_metadata = await (
+            await fetch(
+              metadata["MetadataMap"][0]
+                .get("immutable_metadata_url")
+                .replace("ipfs://", "https://cloudflare-ipfs.com/ipfs/") // load json with immutable metadata via cloudflare ipfs gateway
+            )
+          ).json();
+
+          await sleep(500); // to avoid http error 429 on cloudflare
 
           return {
-            name: metadata["MetadataMap"][0].get("name"),
-            description: metadata["MetadataMap"][0].get("description"),
-            image_url: metadata["MetadataMap"][0]
-              .get("media_url")
-              .replace("ipfs://", "https://cloudflare-ipfs.com/ipfs/"),
+            name: nft_immutable_metadata.name,
+            description: nft_immutable_metadata.description,
+            image_url: nft_immutable_metadata.media_url.replace(
+              "ipfs://",
+              "https://ipfs.io/ipfs/" // use default ipfs gateway to display images
+            ),
           };
         })
       );
