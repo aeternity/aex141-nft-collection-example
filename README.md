@@ -81,7 +81,7 @@ The first example demonstrates how a collection that includes only unique NFTs c
 ### Contract
 
 The following contract is used for showcasing unique NFTs:
-- [CollectionUniqueNFTs.aes](./contracts/recommended/CollectionUniqueNFTs.aes)
+- [CollectionUniqueNFTs.aes](./contracts/CollectionUniqueNFTs.aes)
 
 ### Extensions
 
@@ -121,7 +121,7 @@ The second example demonstrates how a collection of edition size NFTs could look
 ### Contract
 
 The following contract is used for showcasing editon size NFTs with templates:
-- [CollectionTemplateEditionNFTs.aes](./contracts/recommended/CollectionTemplateEditionNFTs.aes)
+- [CollectionTemplateEditionNFTs.aes](./contracts/CollectionTemplateEditionNFTs.aes)
 
 ### Extensions
 
@@ -203,60 +203,60 @@ Alternatively you can set the env variable `SECRET_KEY` in your terminal and jus
 
 ```sh
 Deploying with account: ak_8Ujt76QfpT1DyYsNZKGPGtMZ2C2MFf7CcnpQvJWNsX6szZkYN
-==> Adding include to filesystem: ../core/utils.aes
-==> Adding include to filesystem: ../core/IAEX141NFTReceiver.aes
+==> Adding include to filesystem: ./core/utils.aes
+==> Adding include to filesystem: ./core/IAEX141NFTReceiver.aes
 Contract successfully deployed!
-Contract address: ct_2uFHX2SYHSepCUUJ9QmDLxfKNDiLrgjbAdvZ2ZhJXVvc4YD1NL
-Tx-Hash: th_ne9iG4oXdpgVXkyD2r85G9n5ZVRJX2zPQs8dxkFRxoPz7GHtU
+Contract address: ct_7UNRFTFazecMWA13WzZui6eqwbAit4WEApytasiGcNnWcfUwh
+Tx-Hash: th_2NjMwydgnkwnUXjzV9y3ZMpznamrSeVNaGvJtwhNMdgPi38Gbf
 Gas used: 1159
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
-Using nonce: 136
+Using nonce: 190
 Minted NFT with id '1'
-Tx-Hash: th_Gnh6fs8kgKKF9UaieKYt2uUiweMyn6vEBfZTdy86UdyTaCWE4
-Gas used: 17614
+Tx-Hash: th_2hNaZDU95vtBKnuoUbao2cyuvfyJ4eprt3fRa6FRCFYV5Rzi5u
+Gas used: 17625
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
-Using nonce: 137
+Using nonce: 191
 Minted NFT with id '2'
-Tx-Hash: th_zKiv98Qes4PdJvg1bfCJYVkjeBw8zrjRBPoK92tdS3obzEiYe
-Gas used: 18304
+Tx-Hash: th_k18kpanZfddDhtEk1MfWSEmikRfm3fvu44nbaYZS8emHUVneD
+Gas used: 18315
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
-Using nonce: 138
+Using nonce: 192
 Minted NFT with id '3'
-Tx-Hash: th_2tEwhzJwkya3feQYt8B7bm8DK8LZVF3giXUi9byUkRGoBe8i9u
-Gas used: 18076
+Tx-Hash: th_2QYZTRNvrVfZ3XWFdNAec18uBV7msLxx7R3jLek857X6hs5Mw5
+Gas used: 18087
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
-Using nonce: 139
+Using nonce: 193
 Minted NFT with id '4'
-Tx-Hash: th_2PtXHdoqymzYCWnDsfUDKddDxkEKRJLc7Q43rZzhC7Kvf5L35q
-Gas used: 17706
+Tx-Hash: th_2P2TY4uGsSKbikmqQgVSgqHz2WHPh9RGLKKGvZ2gUsumQiM9yw
+Gas used: 17717
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
-Using nonce: 140
+Using nonce: 194
 Minted NFT with id '5'
-Tx-Hash: th_qYJyKs8kC59ogQ5y8T9JfaiTe6DAuw7JGnhf17JGVFTBhiXxz
-Gas used: 17719
+Tx-Hash: th_2aoXUBqih6P9eY66MfwGbdXzA75tb9QAiZkRMYRpzUUjGjWrsE
+Gas used: 17730
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
-Using nonce: 141
+Using nonce: 195
 Minted NFT with id '6'
-Tx-Hash: th_2DYvgcJkebpGGV6ybXMwwQGjKafexvDXJomJ9bwkHqYau8drcS
-Gas used: 17732
+Tx-Hash: th_zQ2s3dGQijrdFWyMTrSzY9DJRMXgoJZAjf3AVPRK1Qn4CzxKH
+Gas used: 17743
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
-Using nonce: 142
+Using nonce: 196
 Minted NFT with id '7'
-Tx-Hash: th_2g9zeC6gFmk38ugyt1guxLwmqWwPt98XSW6DAt9SZsqkJTQkGM
-Gas used: 17745
+Tx-Hash: th_2XHHHPTve2HwsDwk1xtVaVu5DwoPbVQrD9rtreLyA1ERKaCJ7e
+Gas used: 17756
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
-Using nonce: 143
+Using nonce: 197
 Minted NFT with id '8'
-Tx-Hash: th_KqsufM8XdV9LJZSxEYrc25hxcwzzjK17PFfX55v4nxguiXHCF
-Gas used: 17758
+Tx-Hash: th_xn6iSVA1hQ4siQ2jGcRVcw9UDKDyyYf2yhSHosasQW7BXuHVq
+Gas used: 17769
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
 ```
@@ -275,276 +275,276 @@ Alternatively you can set the env variable `SECRET_KEY` in your terminal and jus
 
 ```sh
 Deploying with account: ak_8Ujt76QfpT1DyYsNZKGPGtMZ2C2MFf7CcnpQvJWNsX6szZkYN
-==> Adding include to filesystem: ../core/utils.aes
-==> Adding include to filesystem: ../core/IAEX141NFTReceiver.aes
+==> Adding include to filesystem: ./core/utils.aes
+==> Adding include to filesystem: ./core/IAEX141NFTReceiver.aes
 Contract successfully deployed!
-Contract address: ct_2H3AicCU5C52v5VFXtTdTVUSh8F2nehoJueJudWG2fhDdb5oVq
-Tx-Hash: th_22LsrV2TRiJ8X2R4CpyCcGuyhv6VohAgeTadkgXcuenWPSYALf
+Contract address: ct_ouWFCU2Qg6v7dgFpjRc3jAfcaRhb9iByPRBDjXSJoA8fRrQ4j
+Tx-Hash: th_n5yBuJYYp7VwLM5Px5hQwSRq8WWPTQuF1YwnKGJXQUBR3w8aR
 Gas used: 1229
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
-Using nonce: 145
+Using nonce: 199
 Created template with id '1'
-Tx-Hash: th_2UhK7TABJ852EaQNVs52c6FkeZaPAv7FQDCq2yFSjt8QY6eC8F
+Tx-Hash: th_2PGQnL1rWB4R7vq6XBtmohwAy1dSwPVBdY97tH84KYsE7LcQpY
 Gas used: 9532
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
-Using nonce: 146
+Using nonce: 200
 Minted NFT with id '1' of template with id '1'
-Tx-Hash: th_2bUC2rgtrYCvvW43eceddsgxZC8Ue7ZA86ws6C8mXqSuRFPkZm
-Gas used: 20694
+Tx-Hash: th_3rcFt7E68nw3YRZ5RcApBERHkZDHMDGMWx9uZjf6ADWf72ih6
+Gas used: 20770
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
-Using nonce: 147
+Using nonce: 201
 Created template with id '2'
-Tx-Hash: th_2TtcWwGQVjYCFdpdqpSNoMiNK2H1qJJbXRsnRa3i7xNpEWGwYt
+Tx-Hash: th_2ibyU3DHxBtcqF38XALXTUsG5eNZJxGD6CLC2m5q9xcqNDRau4
 Gas used: 9872
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
-Using nonce: 148
+Using nonce: 202
 Minted NFT with id '2' of template with id '2'
-Tx-Hash: th_2k9TSTcW9jwHa3tTqVA2HocXeb5bLoHcgdjF1e9yyxwpVACAM5
-Gas used: 21144
+Tx-Hash: th_245xbHsHAFCXAaKMnn6cyLRVacNajVq9firsCSdijS3Xjzoggj
+Gas used: 21220
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
-Using nonce: 149
+Using nonce: 203
 Minted NFT with id '3' of template with id '2'
-Tx-Hash: th_2UtzXD4yahr5Bs1CfRuzEKCqs5AakjiEL7C6RVx7CiK5n5mmUi
-Gas used: 21617
+Tx-Hash: th_2SNVzJjyncHA7hY5SpSc6CRCyaLjawbgJwnQsBaykbEsHH4mU1
+Gas used: 21693
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
-Using nonce: 150
+Using nonce: 204
 Created template with id '3'
-Tx-Hash: th_vggsp9ZvfsW5qSw4iLpiSKVRTNxE7vDiB6W1tKMeXYoyjGJfw
+Tx-Hash: th_96uaVRzGvGpc2cbUQ8Jcr6ZF5coDBZBxxCwmzkxPGFq769Y6u
 Gas used: 9609
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
-Using nonce: 151
+Using nonce: 205
 Minted NFT with id '4' of template with id '3'
-Tx-Hash: th_2QusZbzJcyNmTbmtGwPtShNY3bpBvseZfkz5ymY5u9wp9kkxbt
-Gas used: 20813
+Tx-Hash: th_2TwmoiVGCDRTKSye6kWLKXhYZizSHEfYo247yDwzVZn62CQ9EH
+Gas used: 20889
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
-Using nonce: 152
+Using nonce: 206
 Minted NFT with id '5' of template with id '3'
-Tx-Hash: th_XGAQqiWoD2yGSnYLFRK8LPWRC4oZoJgM4SRRRvpM6BZ5n3mPF
-Gas used: 20826
+Tx-Hash: th_2FPyCeBQAtJ3FpWxQw2me2GPkWkUEE5nbBqb7bSzFU2dqoCcoD
+Gas used: 20902
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
-Using nonce: 153
+Using nonce: 207
 Minted NFT with id '6' of template with id '3'
-Tx-Hash: th_2MBsXxdQ2553twkNM3F6WrQuYShguCynuXh5xtEJkHtmPCcsX6
-Gas used: 20839
+Tx-Hash: th_2ReV7WX3umTEzvh5LhpXfNHpwxeictfFitZujoWhQ8hhjv4y3g
+Gas used: 20915
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
-Using nonce: 154
+Using nonce: 208
 Created template with id '4'
-Tx-Hash: th_2cBrFuziFpvzsf3667dfqcFbdFy4obQQHD2H8V48pUxSYLgZT8
+Tx-Hash: th_2SzeqZxAuWqzJrC8zPf2swFrrZEUHQMgzTm2Sw3CxdoWV6GkT8
 Gas used: 9609
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
-Using nonce: 155
+Using nonce: 209
 Minted NFT with id '7' of template with id '4'
-Tx-Hash: th_g1vhgibgGe7RHg4SR69hagpBqgdFGY7wN7ca6zv9T4eogjcRs
-Gas used: 20852
+Tx-Hash: th_Pf1H6FQD4YFTkcKZ5bjx5EHXv2ysNkTShDed9y7UYg8ANov6R
+Gas used: 20928
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
-Using nonce: 156
+Using nonce: 210
 Minted NFT with id '8' of template with id '4'
-Tx-Hash: th_qnAgJKNRTGZzuYvGp8pygDhG4WV6GJs5xqnrHNLEPB4sLSMzq
-Gas used: 20865
+Tx-Hash: th_2Yvcw1NY3m8n3uJb5mSmsAbiq4TaZzdn1MUjQdEAhQaZtGZ7G7
+Gas used: 20941
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
-Using nonce: 157
+Using nonce: 211
 Minted NFT with id '9' of template with id '4'
-Tx-Hash: th_NDPpbiJSEWi4jfX7jmcFGtq42CnYv4YpWhUdgzrXAQ5rfhJL1
-Gas used: 20878
+Tx-Hash: th_t3GF7iTsuzSKCn89gVF6CUaNToiHkNuDRJhTozQb9YFNwz7Y8
+Gas used: 20954
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
-Using nonce: 158
+Using nonce: 212
 Minted NFT with id '10' of template with id '4'
-Tx-Hash: th_cQnuwe9iSzJEyBCixcxQVcsN8uVeKUEVShQ8M2HJTTSwv7Va
-Gas used: 20891
+Tx-Hash: th_2oFSqEXwnhw1TigGzgjTzFAXCYvHwf1vLsxeXcLxnkk8En1yrW
+Gas used: 20967
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
-Using nonce: 159
+Using nonce: 213
 Created template with id '5'
-Tx-Hash: th_DqVP8TTGrqRMn37XSZf9nBaPbhvzraKdYmXowzktaVzCLFbpd
+Tx-Hash: th_NnufVP31xmEGdT2pyfyc4mMkykCYBiicLprULeoC3w9VYgVxS
 Gas used: 9609
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
-Using nonce: 160
+Using nonce: 214
 Minted NFT with id '11' of template with id '5'
-Tx-Hash: th_vD1eKXFAjoeQHMM5yg5T9dY2vm6DL5Z43WDKs3Ai6oPvWD8DX
-Gas used: 20904
+Tx-Hash: th_2Q5YV5knw9kJLiqHDKe7rf1D6ygFAVojvGA1AU9iMqWhVAQD3u
+Gas used: 20980
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
-Using nonce: 161
+Using nonce: 215
 Minted NFT with id '12' of template with id '5'
-Tx-Hash: th_DVsrdqsEaic1eQaFzahPBrgQ6nMWhGFKxohubT6PbgiSazm7M
-Gas used: 20917
+Tx-Hash: th_n99SJYSeKzT2bBkQizPR5pZmoWwCrtWG2AYGE17pQGhQrY8Z
+Gas used: 20993
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
-Using nonce: 162
+Using nonce: 216
 Minted NFT with id '13' of template with id '5'
-Tx-Hash: th_FbdznA8fXXsZkscNoZ2PSpCNQqg2qtq3mTXP9SC1xRSVouabZ
-Gas used: 20930
+Tx-Hash: th_2iq63GjKiQM55XL5kqHszMTQWxR1hV2z3QHW7mLVwwZmtMr9XD
+Gas used: 21006
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
-Using nonce: 163
+Using nonce: 217
 Minted NFT with id '14' of template with id '5'
-Tx-Hash: th_2E8HRE2P83XMhmXJ3cDQpeHzbgd8gE9wTekSrw74G5kF2UqTQT
-Gas used: 20943
+Tx-Hash: th_iXszEPKHSHHymBXeCMgG4y2NRPFdZrn2JHNpvGiH2hLJNjQnL
+Gas used: 21019
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
-Using nonce: 164
+Using nonce: 218
 Minted NFT with id '15' of template with id '5'
-Tx-Hash: th_h863tyk8NmbYz1wUYZS8QQF4cYuKtgZq9oSKcVTotAj9GHRci
-Gas used: 20956
+Tx-Hash: th_2FMB4iuHbiEjgXhL3EKRZvpdvUB1WfDuCvRyCFgcNig3HrkxN7
+Gas used: 21032
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
-Using nonce: 165
+Using nonce: 219
 Created template with id '6'
-Tx-Hash: th_LhyvUFDqRyqwMk6weJ8dM3Jo2PFmPd4HfnnLHNim2EU7rG56Z
+Tx-Hash: th_jyHrAvmUs7LMEeZH7habmeyLRXtLV5GdNmTzALDdimTJPDT4r
 Gas used: 9609
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
-Using nonce: 166
+Using nonce: 220
 Minted NFT with id '16' of template with id '6'
-Tx-Hash: th_mq4SS4evawdzGJQQSUxxQiYt2BBup5VK2JarAtGLkZrhzHFXJ
-Gas used: 20969
+Tx-Hash: th_2dc6gQgJcxh9o7j4ksKuQUKfjNyjTT9fz4BoxyKKsbnv5BuQde
+Gas used: 21045
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
-Using nonce: 167
+Using nonce: 221
 Minted NFT with id '17' of template with id '6'
-Tx-Hash: th_2J2p8f7yB33RovLBqWe7gH98M9ANihx73t9aYRe7h5vnmmzyzA
-Gas used: 20982
+Tx-Hash: th_2XEYCfuvXGnRDq7SNgkLJWzV6sTvkKiTK5iugdhtuGMnFNUckE
+Gas used: 21058
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
-Using nonce: 168
+Using nonce: 222
 Minted NFT with id '18' of template with id '6'
-Tx-Hash: th_KFpm84GC1RB3TnFLE9A94goLV6U1yWwr9UYbmajgnGTLoxNi1
-Gas used: 20995
+Tx-Hash: th_29P2dRZ61idjctCBPtM8328yQGDyby3J8r9JCLvG1ysYS2AYW4
+Gas used: 21071
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
-Using nonce: 169
+Using nonce: 223
 Minted NFT with id '19' of template with id '6'
-Tx-Hash: th_2cieevU2USd4jz2BdyQAH34oNypge7HUWGWNUdPjnyNWeGL56a
-Gas used: 21008
+Tx-Hash: th_2thhrzXq2uYxssbner5VroogZnJtNeYo4FGXGJDxbCSMst9Kfv
+Gas used: 21084
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
-Using nonce: 170
+Using nonce: 224
 Minted NFT with id '20' of template with id '6'
-Tx-Hash: th_egBYXMAxGbznzEmLomioZuNvmKNBePkGJZd8jyTxBgUkcJvoq
-Gas used: 21021
+Tx-Hash: th_2NcGuSvUqDQAmZbr169WtpyGZZPbGPS1nKC8TQJWWAz3Yew8nw
+Gas used: 21097
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
-Using nonce: 171
+Using nonce: 225
 Minted NFT with id '21' of template with id '6'
-Tx-Hash: th_Mp1RtTvYimzMfwSyQBKXVQAaGSEc928sbBghKnX1gTjc3Pz14
-Gas used: 21034
+Tx-Hash: th_mqqJN1A1ueXuwJa4HhnyQ8PHtRQXLBMAaZ1PRrfhorHYVxXXM
+Gas used: 21110
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
-Using nonce: 172
+Using nonce: 226
 Created template with id '7'
-Tx-Hash: th_S2eCAEfFvSySG7UwNY6UgQwys1G5KGDF6tUrAcRvTYcxgZkAn
+Tx-Hash: th_2SrJdSvPjV62RfeCMhFwepTDg6STGGw7jhFGjRnJw5DjthJEG5
 Gas used: 9609
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
-Using nonce: 173
+Using nonce: 227
 Minted NFT with id '22' of template with id '7'
-Tx-Hash: th_2UUNGGyrPa3GViP2q3W9n7NX5Xp4czSox5BFw8ZcfwNwyVL5nD
-Gas used: 21047
+Tx-Hash: th_u9UD81yVvHVDBfGFYVjCbMhVcyGJnEepM72FKDtfscnc2V3FB
+Gas used: 21123
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
-Using nonce: 174
+Using nonce: 228
 Minted NFT with id '23' of template with id '7'
-Tx-Hash: th_2Xqqf9sweX6i1FJmLErbUi8ezQUswzK4W94VuQVePFGkBXGp2f
-Gas used: 21060
+Tx-Hash: th_VTZEenRKbjRwqgsZ1csRBgrNwwJ2HW55brgH1zzMs5UR57gJJ
+Gas used: 21136
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
-Using nonce: 175
+Using nonce: 229
 Minted NFT with id '24' of template with id '7'
-Tx-Hash: th_dGvyb54WSahZ42iissriW7Vrfo8CPSQ3DcpXmZEdxBSryS8Ms
-Gas used: 21073
+Tx-Hash: th_S5bW3dX1EybdkSyXLLYW1j3qu36wu8M9McU7kmaxtxFf6yTCD
+Gas used: 21149
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
-Using nonce: 176
+Using nonce: 230
 Minted NFT with id '25' of template with id '7'
-Tx-Hash: th_zJBSQYN8oqmxAYxqCkaXpCGzxPsMExf8bJqw7DJ4hCKypH8xe
-Gas used: 21086
+Tx-Hash: th_2anJr4Shv1va3oqSV4gqZRmiPZE9qDTMvHcC1wvtxfF8g38Q2k
+Gas used: 21162
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
-Using nonce: 177
+Using nonce: 231
 Minted NFT with id '26' of template with id '7'
-Tx-Hash: th_F6HPzUTijtduyU2Lcv5ixYKhz2vr33EPSkr3uDz4WZFcWd5Yz
-Gas used: 21099
+Tx-Hash: th_kEwW3XKgTULVDHXMsoKa4Y7Kf5zDMECoYG7uPcrwv8zJFjpt2
+Gas used: 21175
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
-Using nonce: 178
+Using nonce: 232
 Minted NFT with id '27' of template with id '7'
-Tx-Hash: th_gdNKphUiT58a7CAyiTY3gRcoCkHQvsvsfjZnmrvkoh1Bt5QDx
-Gas used: 21112
+Tx-Hash: th_y8TsVf2QdF5q5grC1GLzkRu6fWT1yHyHeLt6dbdG5VcWNFjsr
+Gas used: 21188
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
-Using nonce: 179
+Using nonce: 233
 Minted NFT with id '28' of template with id '7'
-Tx-Hash: th_U9YGzeFnmPw27FDmRDbtWxkSHNZswqWjuwHpB9LWGzcSinCg1
-Gas used: 21125
+Tx-Hash: th_2bWNcpUHDf8FhcXW4bPPbxPHnKGnT9mAz2anrG77nv6hprndMB
+Gas used: 21201
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
-Using nonce: 180
+Using nonce: 234
 Created template with id '8'
-Tx-Hash: th_2LzJXMXVrR2vVe257WHKAxhvp6rkJARxEziZE83cjx3ewMv2aW
+Tx-Hash: th_2HvA2uikQtmZRPdpYqGkUEHvSDQYycpR9JC8XmC5a3UMrWBQUh
 Gas used: 9609
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
-Using nonce: 181
+Using nonce: 235
 Minted NFT with id '29' of template with id '8'
-Tx-Hash: th_2wCte9xTDdGACuTsNXq9jkUNfuypzKDhyBS74c8V9wSMfjCGpU
-Gas used: 21138
+Tx-Hash: th_ZzPmumNtkYCfrGpVGtQP6em9hgkWQqstddB5ynagrJJa7ua9c
+Gas used: 21214
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
-Using nonce: 182
+Using nonce: 236
 Minted NFT with id '30' of template with id '8'
-Tx-Hash: th_wc7SUynzRj6qA3nEAwGfJDB3Z6XEu8eywmXKxkaZQcu24Aabk
-Gas used: 21151
+Tx-Hash: th_2UAUi3oYgcYsJ8EGvxR4vurygt7qhYq7tVRNx4g2sZ3quVpym7
+Gas used: 21227
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
-Using nonce: 183
+Using nonce: 237
 Minted NFT with id '31' of template with id '8'
-Tx-Hash: th_2pqomrWDC2AdaqZ9dm2U2CAm9g5MeZf5vstfY76GfiXPeXCVcU
-Gas used: 21189
+Tx-Hash: th_JL2n2V5mo8g1JkK1MuFM5T3TGxFvJPNvx53eECq3FmziLM1Wf
+Gas used: 21265
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
-Using nonce: 184
+Using nonce: 238
 Minted NFT with id '32' of template with id '8'
-Tx-Hash: th_6H27djF7SCghAHQ5ZA5dpPjV6iQ7DMVDSAus2EL19zCU44oVk
-Gas used: 21204
+Tx-Hash: th_28o9vXi8VThcBHVe3ptrkjpsewXXjDEQQfuFG6aAAoh13dbRvf
+Gas used: 21280
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
-Using nonce: 185
+Using nonce: 239
 Minted NFT with id '33' of template with id '8'
-Tx-Hash: th_2SehZGYP974PTABs663QjbRVYBJo23kP32XcTZRcEieCRxNgbb
-Gas used: 21217
+Tx-Hash: th_2bbWUsi5BoMFKezxwRKJUH5pvD5PmVco1PiQ4we4qPPviHF5m6
+Gas used: 21293
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
-Using nonce: 186
+Using nonce: 240
 Minted NFT with id '34' of template with id '8'
-Tx-Hash: th_1EhRGxUXFGsSaFL9W3GaVHdhjccGvS912xDyQkyATH2cw9d6a
-Gas used: 21230
+Tx-Hash: th_GeiXCxSo18NuFUzYhFBJ6qP9jNX9x9WPRAziSiM11RBNpdN6j
+Gas used: 21306
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
-Using nonce: 187
+Using nonce: 241
 Minted NFT with id '35' of template with id '8'
-Tx-Hash: th_yHEU4n175kY3tdawVigBem1MLGtfiPzyHtrz5PjX3NTkzfZB9
-Gas used: 21243
+Tx-Hash: th_VJwCLbMYDtLC2hZNQkYL9ZBmWXxKeTzi6JShnVShfZDmLd89d
+Gas used: 21319
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
-Using nonce: 188
+Using nonce: 242
 Minted NFT with id '36' of template with id '8'
-Tx-Hash: th_2jGn723bBHqRESnDGeDQfp6HQEn5jYbL3e2joy3A5WW6hEaC4P
-Gas used: 21256
+Tx-Hash: th_2iPCus1mjAiT5Vdm5qk6yD879Vi2xbzF7ub8ofpnhpxpA5cow2
+Gas used: 21332
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
 ```
@@ -554,7 +554,7 @@ Gas used: 21256
 
 This repository also provides you an example frontend, the [Simple-NFT-Viewer](./simple-nft-viewer) which is written in Vue.js.
 
-It fetches the NFT metadata from contract [ct_2uFHX2SYHSepCUUJ9QmDLxfKNDiLrgjbAdvZ2ZhJXVvc4YD1NL](https://explorer.testnet.aeternity.io/contracts/transactions/ct_2uFHX2SYHSepCUUJ9QmDLxfKNDiLrgjbAdvZ2ZhJXVvc4YD1NL) and displays:
+It fetches the NFT metadata from contract [ct_7UNRFTFazecMWA13WzZui6eqwbAit4WEApytasiGcNnWcfUwh](https://explorer.testnet.aeternity.io/contracts/transactions/ct_7UNRFTFazecMWA13WzZui6eqwbAit4WEApytasiGcNnWcfUwh) and displays:
  - Name of the NFT collection
  - Name, Description and Image of all NFTs
 

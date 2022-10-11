@@ -41,8 +41,7 @@ export default {
       const aeSdk = this.initSdk();
       const contract = await aeSdk.getContractInstance({
         aci: aex141Aci,
-        contractAddress:
-          "ct_2uFHX2SYHSepCUUJ9QmDLxfKNDiLrgjbAdvZ2ZhJXVvc4YD1NL",
+        contractAddress: "ct_7UNRFTFazecMWA13WzZui6eqwbAit4WEApytasiGcNnWcfUwh",
       });
 
       this.metaInfo = await contract.methods

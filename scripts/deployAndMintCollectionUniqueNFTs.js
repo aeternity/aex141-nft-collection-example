@@ -33,7 +33,7 @@ const collectionUniqueMetadata = require('../nfts/collection_unique_nfts.json');
     });
     await aeSdk.addAccount(senderAccount, { select: true });
 
-    const CONTRACT = './contracts/recommended/CollectionUniqueNFTs.aes';
+    const CONTRACT = './contracts/CollectionUniqueNFTs.aes';
     const source = utils.getContractContent(CONTRACT);
     const fileSystem = utils.getFilesystem(CONTRACT);
 

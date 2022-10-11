@@ -4,10 +4,10 @@ const chaiAsPromised = require('chai-as-promised');
 
 use(chaiAsPromised);
 
-const CONTRACT_SOURCE = './contracts/recommended/CollectionTemplateEditionNFTs.aes';
+const CONTRACT_SOURCE = './contracts/CollectionTemplateEditionNFTs.aes';
 const RECEIVER_CONTRACT_SOURCE = './contracts/nft-receiver-example/AEX141NFTReceiverExample.aes';
 
-const collectionTemplateData = require('../../nfts/collection_templates.json');
+const collectionTemplateData = require('../nfts/collection_templates.json');
 
 const logGasUsed = (entrypoint, tx) => {
   console.log(`${entrypoint}, gas used: ${tx.result.gasUsed}`)

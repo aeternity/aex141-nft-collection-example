@@ -6,11 +6,11 @@ use(chaiAsPromised);
 
 BigInt.prototype.toJSON = function() { return this.toString() }
 
-const CONTRACT_SOURCE = './contracts/recommended/CollectionUniqueNFTs.aes';
+const CONTRACT_SOURCE = './contracts/CollectionUniqueNFTs.aes';
 const RECEIVER_CONTRACT_SOURCE = './contracts/nft-receiver-example/AEX141NFTReceiverExample.aes';
 const OPERATOR_CONTRACT_SOURCE = './contracts/operator-example/OperatorExample.aes'
 
-const collectionUniqueMetadata = require('../../nfts/collection_unique_nfts.json');
+const collectionUniqueMetadata = require('../nfts/collection_unique_nfts.json');
 
 describe('CollectionUniqueNFTs', () => {
   let aeSdk;
