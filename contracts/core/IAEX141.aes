@@ -12,6 +12,8 @@ contract interface IAEX141 =
         = Transfer(address, address, int)
         | Approval(address, address, int, string)
         | ApprovalForAll(address, address, string)
+        // extension "burnable" event
+        | Burn(address, int)
 
     entrypoint aex141_extensions : () => list(string)
     entrypoint meta_info : () => meta_info
@@ -25,3 +27,6 @@ contract interface IAEX141 =
     entrypoint get_approved : (int) => option(address)
     entrypoint is_approved : (int, address) => bool
     entrypoint is_approved_for_all : (address, address) => bool
+
+    // extension "burnable"
+    stateful entrypoint burn : (int) => unit

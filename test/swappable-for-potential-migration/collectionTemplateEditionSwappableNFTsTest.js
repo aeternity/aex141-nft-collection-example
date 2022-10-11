@@ -5,7 +5,7 @@ const chaiAsPromised = require('chai-as-promised');
 use(chaiAsPromised);
 
 const CONTRACT_SOURCE = './contracts/swappable-for-potential-migration/CollectionTemplateEditionSwappableNFTs.aes';
-const RECEIVER_CONTRACT_SOURCE = './test/receiver.aes';
+const RECEIVER_CONTRACT_SOURCE = './contracts/nft-receiver-example/AEX141NFTReceiverExample.aes';
 
 const collectionTemplateData = require('../../nfts/collection_templates.json');
 
@@ -42,7 +42,7 @@ describe('CollectionTemplateEditionSwappableNFTs', () => {
 
     // init and deploy receiver contract
     const receiver_contract_source = utils.getContractContent(RECEIVER_CONTRACT_SOURCE);
-    receiver_contract = await aeSdk.getContractInstance({ source: receiver_contract_source });
+    receiver_contract = await aeSdk.getContractInstance({ source: receiver_contract_source, fileSystem: utils.getFilesystem(RECEIVER_CONTRACT_SOURCE) });
     await receiver_contract.deploy();
   });
 

@@ -108,7 +108,7 @@ contract CollectionTemplateEditionNFTs =
             , owners_to_tokens[to = Set.new()] @owners_tokens = Set.insert(token_id, owners_tokens)
             , metadata[token_id] = MetadataMap(Map.from_list([("template_id", Int.to_str(template_id)), ("edition_serial", Int.to_str(edition_serial))]))
             , templates[template_id] @tp = template {edition_mint_count = edition_serial } })
-        switch(invoke_nft_receiver(to, token_id, data))
+        switch(invoke_nft_receiver(None, to, token_id, data))
             (true, false) => abort("SAFE_TRANSFER_FAILED")
             _ => Chain.event(TemplateMint(to, template_id, token_id, Int.to_str(edition_serial)))
         token_id
@@ -122,7 +122,7 @@ contract CollectionTemplateEditionNFTs =
             , token_to_owners[token_id] = to
             , owners_to_tokens[from] @from_tokens = Set.delete(token_id, from_tokens)
             , owners_to_tokens[to = Set.new()] @to_tokens = Set.insert(token_id, to_tokens) })
-        switch(invoke_nft_receiver(to, token_id, data))
+        switch(invoke_nft_receiver(Some(from), to, token_id, data))
             (true, false) => abort("SAFE_TRANSFER_FAILED")
             _ => Chain.event(Transfer(from, to, token_id))
 
@@ -135,7 +135,7 @@ contract CollectionTemplateEditionNFTs =
         Chain.event(Approval(Call.caller, approved, token_id, Utils.bool_to_string(enabled)))
 
     stateful entrypoint approve_all(operator: address, enabled: bool) =
-        put(state{ operators = {[Call.caller] = {[operator] = enabled}} })
+        put(state{operators @ ops = ops{[Call.caller = {}] @ op = op{[operator] = enabled}}})
         Chain.event(ApprovalForAll(Call.caller, operator, Utils.bool_to_string(enabled)))
 
     entrypoint get_approved(token_id: int) : option(address) =
@@ -170,6 +170,7 @@ contract CollectionTemplateEditionNFTs =
 
     stateful entrypoint burn(token_id: int) =
         let owner = require_authorized(token_id)
+        remove_approval(token_id)
         put(state{ balances[owner] @balance = balance - 1
             , total_supply = state.total_supply - 1
             , token_to_owners = Map.delete(token_id, state.token_to_owners)
@@ -208,10 +209,10 @@ contract CollectionTemplateEditionNFTs =
             , token_to_owners = Map.delete(token_id, state.token_to_owners)
             , owners_to_tokens[owner] @owners_tokens = Set.delete(token_id, owners_tokens) })
 
-    function invoke_nft_receiver(to: address, token_id: int, data: option(string)) : (bool * bool) =
+    function invoke_nft_receiver(from: option(address), to: address, token_id: int, data: option(string)) : (bool * bool) =
         if(Address.is_contract(to))
             let c = Address.to_contract(to)
-            switch(c.on_nft_received(token_id, data, protected = true) : option(bool))
+            switch(c.on_nft_received(from, token_id, data, protected = true) : option(bool))
                 None => (true, false)
                 Some(val) => (true, val)
         else

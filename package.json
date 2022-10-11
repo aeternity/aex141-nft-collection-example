@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "This is the default package.json generated for your project",
   "scripts": {
-    "test": "mocha ./test/**/*.js --timeout 0 --exit"
+    "test": "mocha ./test/**/*.js --timeout 0 --exit",
+    "test:recommended:collectionUniqueNFTsTest": "mocha ./test/recommended/collectionUniqueNFTsTest.js --timeout 0 --exit"
   },
   "dependencies": {
     "@aeternity/aepp-sdk": "^12.1.3",
