@@ -245,7 +245,7 @@ contract CollectionTemplateEditionSwappableNFTs =
     function invoke_nft_receiver(from: option(address), to: address, token_id: int, data: option(string)) : (bool * bool) =
         if(Address.is_contract(to))
             let c = Address.to_contract(to)
-            switch(c.on_nft_received(from, token_id, data, protected = true) : option(bool))
+            switch(c.on_aex141_received(from, token_id, data, protected = true) : option(bool))
                 None => (true, false)
                 Some(val) => (true, val)
         else
