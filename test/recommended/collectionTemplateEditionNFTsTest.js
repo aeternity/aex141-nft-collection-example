@@ -63,8 +63,8 @@ describe('CollectionTemplateEditionNFTs', () => {
   describe('Template Creation', async () => {
     it('failed template creation', async () => {;
       await expect(
-        contract.methods.create_template("ipfs://...", 0, { onAccount: accounts[0] }))
-        .to.be.rejectedWith(`Invocation failed: "EDITION_SIZE_MUST_BE_AT_LEAST_ONE"`);
+        contract.methods.create_template("ipfs://...", -1, { onAccount: accounts[0] }))
+        .to.be.rejectedWith(`Invocation failed: "EDITION_SIZE_INVALID"`);
       await expect(
         contract.methods.create_template("ipfs://...", 0, { onAccount: accounts[1] }))
         .to.be.rejectedWith(`Invocation failed: "ONLY_CONTRACT_OWNER_CALL_ALLOWED"`);
@@ -77,7 +77,7 @@ describe('CollectionTemplateEditionNFTs', () => {
             collectionTemplateData.templates[i].immutable_metadata_url,
             collectionTemplateData.templates[i].edition_size, { onAccount: accounts[0] });
         assert.equal(createTemplateTx.decodedResult, i+1);
-        assert.equal(createTemplateTx.decodedEvents[0].name, 'TemplateCreated');
+        assert.equal(createTemplateTx.decodedEvents[0].name, 'TemplateCreation');
         assert.equal(createTemplateTx.decodedEvents[0].args[0], i+1);
         assert.equal(createTemplateTx.decodedEvents[0].args[1], collectionTemplateData.templates[i].immutable_metadata_url);
         assert.equal(createTemplateTx.decodedEvents[0].args[2], collectionTemplateData.templates[i].edition_size);

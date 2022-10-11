@@ -10,7 +10,7 @@ include "../core/IAEX141NFTReceiver.aes"
 contract CollectionTemplateEditionNFTs =
 
     datatype event
-        = TemplateCreated(int, string, int) // id, immutable_metadata_url, edition_size
+        = TemplateCreation(int, string, int) // id, immutable_metadata_url, edition_size
         | TemplateMint(address, int, int, string) // to, template_id, token_id, edition_serial
         | Transfer(address, address, int) // from, to, token_id
         | Approval(address, address, int, string) // owner, approved_account, token_id, enabled ("true"/"false")
@@ -85,20 +85,21 @@ contract CollectionTemplateEditionNFTs =
 
     stateful entrypoint create_template(immutable_metadata_url: string, edition_size: int) : int =
         require_contract_owner()
-        require(edition_size > 0, "EDITION_SIZE_MUST_BE_AT_LEAST_ONE")
+        require(edition_size >= 0, "EDITION_SIZE_INVALID")
         let template_id = state.template_counter
         put(state{ template_counter = state.template_counter + 1 
             , templates[template_id] =
                 { immutable_metadata_url = immutable_metadata_url
                 , edition_size = edition_size
                 , edition_mint_count = 0 } })
-        Chain.event(TemplateCreated(template_id, immutable_metadata_url, edition_size))
+        Chain.event(TemplateCreation(template_id, immutable_metadata_url, edition_size))
         template_id
 
     stateful entrypoint template_mint(to: address, template_id: int, data: option(string)) : int =
         require_contract_owner()
         let template = Option.force_msg(Map.lookup(template_id, state.templates), "TEMPLATE_ID_NOT_EXISTS")
-        require(template.edition_mint_count < template.edition_size, "TEMPLATE_EDITION_SIZE_EXCEEDED")
+        if(template.edition_size > 0)
+            require(template.edition_mint_count < template.edition_size, "TEMPLATE_EDITION_SIZE_EXCEEDED")
         let edition_serial = template.edition_mint_count + 1
         let token_id = state.nft_counter
         put(state{ nft_counter = state.nft_counter + 1
