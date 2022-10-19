@@ -32,11 +32,12 @@ describe('CollectionUniqueNFTs', () => {
     contract = await aeSdk.getContractInstance({ source, fileSystem });
 
     // deploy the contract
-    await contract.deploy([
+    const contractCreateTx = await contract.deploy([
       collectionUniqueMetadata.name,
       collectionUniqueMetadata.symbol,
-      8
-    ]);
+      8]);
+    // https://github.com/aeternity/aepp-sdk-js/issues/1692
+    assert.equal(contractCreateTx.result.log[0].topics[1], 8);
 
     // init and deploy receiver contract
     const receiverContractSource = utils.getContractContent(RECEIVER_CONTRACT_SOURCE);
