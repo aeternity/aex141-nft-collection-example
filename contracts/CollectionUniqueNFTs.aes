@@ -44,7 +44,9 @@ contract CollectionUniqueNFTs =
         require(String.length(name) >= 1, "STRING_TOO_SHORT_NAME")
         require(String.length(symbol) >= 1, "STRING_TOO_SHORT_SYMBOL")
         if(Option.is_some(token_limit))
-            Chain.event(TokenLimit(Option.force(token_limit)))
+            let limit = Option.force(token_limit)
+            require(limit > 0, "TOKEN_LIMIT_INVALID")
+            Chain.event(TokenLimit(limit))
         { owner = Contract.creator,
           meta_info = { name = name, symbol = symbol, base_url = None, metadata_type = MAP },
           token_to_owners = {},

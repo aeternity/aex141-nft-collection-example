@@ -31,6 +31,14 @@ describe('CollectionUniqueNFTs', () => {
     // initialize the contract instance
     contract = await aeSdk.getContractInstance({ source, fileSystem });
 
+    // expect failed deployment for invalid token limit
+    await expect(
+      contract.deploy([
+        collectionUniqueMetadata.name,
+        collectionUniqueMetadata.symbol,
+        -1]))
+      .to.be.rejectedWith(`Invocation failed: "TOKEN_LIMIT_INVALID"`);
+
     // deploy the contract
     const contractCreateTx = await contract.deploy([
       collectionUniqueMetadata.name,
