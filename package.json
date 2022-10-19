@@ -1,7 +1,7 @@
 {
-  "name": "aeproject-project",
+  "name": "aex141-nft-collection-example",
   "version": "1.0.0",
-  "description": "This is the default package.json generated for your project",
+  "description": "this example demonstrate how NFT collections could be created using AEX-141",
   "scripts": {
     "test": "mocha ./test/**/*.js --timeout 0 --exit",
     "test:collectionUniqueNFTsTest": "mocha ./test/collectionUniqueNFTsTest.js --timeout 0 --exit",
