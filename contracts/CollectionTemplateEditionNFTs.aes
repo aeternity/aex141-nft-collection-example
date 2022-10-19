@@ -127,6 +127,19 @@ contract CollectionTemplateEditionNFTs =
             (true, false) => abort("SAFE_TRANSFER_FAILED")
             _ => Chain.event(Transfer(from, to, token_id))
 
+    stateful entrypoint claim_from_contract(token_id: int) =
+        let to = Call.caller
+        require(Address.is_contract(to), "CALLER_MUST_BE_A_CONTRACT")
+        let from = require_authorized(token_id)
+        require(from != to, "SENDER_MUST_NOT_BE_RECEIVER")
+        remove_approval(token_id)
+        put(state{ balances[from] @balance1 = balance1 - 1
+            , balances[to = 0] @balance2 = balance2 + 1
+            , token_to_owners[token_id] = to
+            , owners_to_tokens[from] @from_tokens = Set.delete(token_id, from_tokens)
+            , owners_to_tokens[to = Set.new()] @to_tokens = Set.insert(token_id, to_tokens) })
+        Chain.event(Transfer(from, to, token_id))
+
     stateful entrypoint approve(approved: address, token_id: int, enabled: bool) =
         require_authorized(token_id)
         if(enabled)

@@ -29,6 +29,12 @@ contract NFTReceiverExample =
         put(state{ contract_to_tokenowner[nft_contract] @token_to_owner = Map.delete(token_id, token_to_owner) })
         nft_contract.transfer(Call.caller, token_id, None)
 
+    stateful entrypoint transfer_nft_to_contract(nft_contract: IAEX141, token_id: int) =
+        let from = Option.force_msg(nft_contract.owner(token_id), "TOKEN_ID_NOT_EXISTS")
+        nft_contract.claim_from_contract(token_id)
+        put(state{ contract_to_tokenowner[nft_contract = {}] @token_to_owner =
+                token_to_owner{[token_id] = from} })
+
     stateful entrypoint on_aex141_received(from: option(address), token_id: int, data: option(string)) : bool =
         switch(data)
             None =>

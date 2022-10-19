@@ -457,5 +457,58 @@ describe('CollectionUniqueNFTs', () => {
       getContractToTokenownerDryRun = await receiverContract.methods.get_contract_to_tokenowner();
       assert.deepEqual(getContractToTokenownerDryRun.decodedResult, new Map([[contract.deployInfo.address, new Map()]]));
     });
+
+    it('claim nft from contract', async () => {
+      const receiverContractId = receiverContract.deployInfo.address;
+      const receiverContractAddress = receiverContractId.replace("ct_", "ak_");
+
+      // expect claim_from_contract failing as not being called from a contract
+      await expect(
+        contract.methods.claim_from_contract(4, { onAccount: accounts[0] }))
+        .to.be.rejectedWith(`Invocation failed: "CALLER_MUST_BE_A_CONTRACT"`);
+
+      // expect transfer_nft_to_contract (which calls claim_from_contract) failing due to missing approval
+      await expect(
+        receiverContract.methods.transfer_nft_to_contract(contract.deployInfo.address, 4, { onAccount: accounts[0] }))
+        .to.be.rejectedWith(`Invocation failed: "ONLY_OWNER_APPROVED_OR_OPERATOR_CALL_ALLOWED"`);
+
+      // approve the receiverContract to control the NFT
+      await contract.methods.approve(receiverContractAddress, 4, true, { onAccount: accounts[0] });
+
+      // claim the NFT from the current owner to the contract
+      // can be called from any account now as demonstrated, because receiverContract has approval to claim the NFT
+      let transferTx = await receiverContract.methods.transfer_nft_to_contract(contract.deployInfo.address, 4, { onAccount: accounts[5] });
+      assert.equal(transferTx.decodedEvents[0].name, 'Transfer');
+      assert.equal(transferTx.decodedEvents[0].args[0], await accounts[0].address());
+      assert.equal(transferTx.decodedEvents[0].args[1], receiverContractAddress);
+      assert.equal(transferTx.decodedEvents[0].args[2], 4);
+
+      const expectedContractToTokenOwnerResult =
+        new Map([[contract.deployInfo.address, new Map([[4n, await accounts[0].address()]])]]);
+      
+      // check storage of original token owners
+      let getContractToTokenownerDryRun = await receiverContract.methods.get_contract_to_tokenowner();
+      assert.deepEqual(getContractToTokenownerDryRun.decodedResult,
+        expectedContractToTokenOwnerResult);
+
+      // check original token owner of specific nft
+      let getNftOwnerDryRun = await receiverContract.methods.get_nft_owner(contract.deployInfo.address, 4);
+      assert.equal(getNftOwnerDryRun.decodedResult, await accounts[0].address());
+
+      // claim token back
+      const claimNftTx = await receiverContract.methods.claim_nft(contract.deployInfo.address, 4, { onAccount: accounts[0] });
+      assert.equal(claimNftTx.decodedEvents[0].name, 'Transfer');
+      assert.equal(claimNftTx.decodedEvents[0].args[0], receiverContractAddress);
+      assert.equal(claimNftTx.decodedEvents[0].args[1], await accounts[0].address());
+      assert.equal(claimNftTx.decodedEvents[0].args[2], 4);
+
+      // check original token owner of specific nft
+      getNftOwnerDryRun = await receiverContract.methods.get_nft_owner(contract.deployInfo.address, 4);
+      assert.equal(getNftOwnerDryRun.decodedResult, undefined);
+
+      // check storage of original token owners
+      getContractToTokenownerDryRun = await receiverContract.methods.get_contract_to_tokenowner();
+      assert.deepEqual(getContractToTokenownerDryRun.decodedResult, new Map([[contract.deployInfo.address, new Map()]]));
+    });
   });
 });
