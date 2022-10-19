@@ -10,10 +10,12 @@ include "./core/IAEX141NFTReceiver.aes"
 contract CollectionUniqueNFTs =
 
     datatype event
-        = Mint(address, int) // to, token_id
-        | Transfer(address, address, int) // from, to, token_id
+        = Transfer(address, address, int) // from, to, token_id
         | Approval(address, address, int, string) // owner, approved_account, token_id, enabled ("true"/"false")
         | ApprovalForAll(address, address, string) // owner, operator, approved ("true"/"false")
+        | Mint(address, int) // to, token_id
+        | TokenLimit(int) // limit
+        | TokenLimitChange(int, int) // old_limit, new_limit
         | Burn(address, int) // owner, token_id
 
     datatype metadata_type = URL | OBJECT_ID | MAP
@@ -35,11 +37,14 @@ contract CollectionUniqueNFTs =
         , operators: map(address, map(address, bool))
         , metadata: map(int, metadata)
         , total_supply: int
+        , token_limit: option(int)
         , counter: int }
 
-    stateful entrypoint init(name: string, symbol: string) =
+    stateful entrypoint init(name: string, symbol: string, token_limit: option(int)) =
         require(String.length(name) >= 1, "STRING_TOO_SHORT_NAME")
         require(String.length(symbol) >= 1, "STRING_TOO_SHORT_SYMBOL")
+        if(Option.is_some(token_limit))
+            Chain.event(TokenLimit(Option.force(token_limit)))
         { owner = Contract.creator,
           meta_info = { name = name, symbol = symbol, base_url = None, metadata_type = MAP },
           token_to_owners = {},
@@ -49,25 +54,8 @@ contract CollectionUniqueNFTs =
           operators = {},
           metadata = {},
           total_supply = 0,
+          token_limit = token_limit,
           counter = 1 }
-    
-    stateful entrypoint mint(to: address, metadata: option(metadata), data: option(string)) : int =  
-        require_contract_owner()
-        switch(metadata)
-            None => abort("NO_METADATA_PROVIDED")
-            Some(MetadataIdentifier(_)) => abort("NOT_METADATA_MAP")
-            Some(v) =>
-                let token_id = state.counter
-                put(state{ counter = state.counter + 1
-                    , total_supply = state.total_supply + 1
-                    , balances[to = 0] @balance = balance + 1
-                    , token_to_owners[token_id] = to
-                    , owners_to_tokens[to = Set.new()] @owners_tokens = Set.insert(token_id, owners_tokens)
-                    , metadata[token_id] = v })
-                switch(invoke_nft_receiver(None, to, token_id, data))
-                    (true, false) => abort("SAFE_TRANSFER_FAILED")
-                    _ => Chain.event(Mint(to, token_id))
-                token_id
 
     entrypoint aex141_extensions() : list(string) =
         ["mintable", "burnable"]
@@ -80,6 +68,9 @@ contract CollectionUniqueNFTs =
 
     entrypoint total_supply() : int =
         state.total_supply
+
+    entrypoint token_limit() : option(int) =
+        state.token_limit
 
     entrypoint balance(owner: address) : option(int) =
         Map.lookup(owner, state.balances)
@@ -140,6 +131,40 @@ contract CollectionUniqueNFTs =
                 switch(Map.lookup(operator, ops))
                     None => false
                     Some(v) => v
+
+    stateful entrypoint mint(to: address, metadata: option(metadata), data: option(string)) : int =  
+        require_contract_owner()
+        if(Option.is_some(state.token_limit) && Option.force(state.token_limit) == state.total_supply)
+            abort("TOKEN_LIMIT_REACHED")
+        switch(metadata)
+            None => abort("NO_METADATA_PROVIDED")
+            Some(MetadataIdentifier(_)) => abort("NOT_METADATA_MAP")
+            Some(v) =>
+                let token_id = state.counter
+                put(state{ counter = state.counter + 1
+                    , total_supply = state.total_supply + 1
+                    , balances[to = 0] @balance = balance + 1
+                    , token_to_owners[token_id] = to
+                    , owners_to_tokens[to = Set.new()] @owners_tokens = Set.insert(token_id, owners_tokens)
+                    , metadata[token_id] = v })
+                switch(invoke_nft_receiver(None, to, token_id, data))
+                    (true, false) => abort("SAFE_TRANSFER_FAILED")
+                    _ => Chain.event(Mint(to, token_id))
+                token_id
+
+    stateful entrypoint change_token_limit(new_limit: int) =
+        require_contract_owner()
+        switch(state.token_limit)
+            None => abort("TOKEN_LIMIT_CHANGE_NOT_ALLOWED")
+            Some(limit) =>
+                if(new_limit > limit)
+                    abort("TOKEN_LIMIT_INCREASE_NOT_ALLOWED")
+                if(new_limit == limit)
+                    abort("NO_CHANGE_PROVIDED")
+                if(new_limit < state.total_supply)
+                    abort("MORE_TOKENS_ALREADY_IN_EXISTENCE")
+                put(state{token_limit = Some(new_limit)})
+                Chain.event(TokenLimitChange(limit, new_limit))
 
     stateful entrypoint burn(token_id: int) =
         let owner = require_authorized(token_id)

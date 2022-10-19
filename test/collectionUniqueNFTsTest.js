@@ -34,7 +34,8 @@ describe('CollectionUniqueNFTs', () => {
     // deploy the contract
     await contract.deploy([
       collectionUniqueMetadata.name,
-      collectionUniqueMetadata.symbol
+      collectionUniqueMetadata.symbol,
+      8
     ]);
 
     // init and deploy receiver contract
@@ -54,6 +55,10 @@ describe('CollectionUniqueNFTs', () => {
       assert.equal(decodedResult.symbol, collectionUniqueMetadata.symbol);
       assert.equal(decodedResult.metadata_type.MAP.length, 0);
       assert.equal(decodedResult.base_url, undefined);
+    });
+    it('token_limit', async () => {
+      const { decodedResult } = await contract.methods.token_limit();
+      assert.equal(decodedResult, 8);
     });
   });
 
@@ -114,6 +119,28 @@ describe('CollectionUniqueNFTs', () => {
       // expect metadata for NFT with last id to equal the metadata of the last minted NFT
       metadataDryRun = await contract.methods.metadata(metadataMapAllNFTs.length);
       assert.deepEqual(metadataDryRun.decodedResult.MetadataMap[0], metadataMapAllNFTs[metadataMapAllNFTs.length - 1]);
+    });
+
+    it('failed mint due to minting_limit', async () => {
+      // limit should be reached right now
+      await expect(
+        contract.methods.mint(await accounts[0].address(), {'MetadataMap': [new Map()]}, undefined, { onAccount: accounts[0] }))
+        .to.be.rejectedWith(`Invocation failed: "TOKEN_LIMIT_REACHED"`);
+    });
+
+    it('failed change_token_limit', async () => {
+      await expect(
+        contract.methods.change_token_limit(5, { onAccount: accounts[1] }))
+        .to.be.rejectedWith(`Invocation failed: "ONLY_CONTRACT_OWNER_CALL_ALLOWED"`);
+      await expect(
+        contract.methods.change_token_limit(9, { onAccount: accounts[0] }))
+        .to.be.rejectedWith(`Invocation failed: "TOKEN_LIMIT_INCREASE_NOT_ALLOWED"`);
+      await expect(
+        contract.methods.change_token_limit(8, { onAccount: accounts[0] }))
+        .to.be.rejectedWith(`Invocation failed: "NO_CHANGE_PROVIDED"`);
+      await expect(
+        contract.methods.change_token_limit(7, { onAccount: accounts[0] }))
+        .to.be.rejectedWith(`Invocation failed: "MORE_TOKENS_ALREADY_IN_EXISTENCE"`);
     });
 
     it('transfer', async () => {
@@ -509,6 +536,29 @@ describe('CollectionUniqueNFTs', () => {
       // check storage of original token owners
       getContractToTokenownerDryRun = await receiverContract.methods.get_contract_to_tokenowner();
       assert.deepEqual(getContractToTokenownerDryRun.decodedResult, new Map([[contract.deployInfo.address, new Map()]]));
+    });
+
+    it('change_token_limit after burns', async () => {
+      // check total supply
+      let totalSupplyDryRun = await contract.methods.total_supply();
+      assert.equal(totalSupplyDryRun.decodedResult, 4);
+
+      const changeTokenLimitTx = await contract.methods.change_token_limit(5, { onAccount: accounts[0] });
+      assert.equal(changeTokenLimitTx.decodedEvents[0].name, 'TokenLimitChange');
+      assert.equal(changeTokenLimitTx.decodedEvents[0].args[0], 8);
+      assert.equal(changeTokenLimitTx.decodedEvents[0].args[1], 5);
+
+      // mint a new token
+      await contract.methods.mint(await accounts[0].address(), {'MetadataMap': [new Map()]}, undefined, { onAccount: accounts[0] });
+
+      // check new total supply
+      totalSupplyDryRun = await contract.methods.total_supply();
+      assert.equal(totalSupplyDryRun.decodedResult, 5);
+
+      // limit should be reached right now (again)
+      await expect(
+        contract.methods.mint(await accounts[0].address(), {'MetadataMap': [new Map()]}, undefined, { onAccount: accounts[0] }))
+        .to.be.rejectedWith(`Invocation failed: "TOKEN_LIMIT_REACHED"`);
     });
   });
 });
