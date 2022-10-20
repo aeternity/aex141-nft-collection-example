@@ -9,10 +9,6 @@ const RECEIVER_CONTRACT_SOURCE = './contracts/nft-receiver-example/AEX141NFTRece
 
 const collectionTemplateData = require('../nfts/collection_templates.json');
 
-const logGasUsed = (entrypoint, tx) => {
-  console.log(`${entrypoint}, gas used: ${tx.result.gasUsed}`)
-}
-
 describe('CollectionTemplateEditionNFTs', () => {
   let aeSdk;
   let contract;
@@ -37,7 +33,8 @@ describe('CollectionTemplateEditionNFTs', () => {
     // deploy the contract
     await contract.deploy([
       collectionTemplateData.name,
-      collectionTemplateData.symbol
+      collectionTemplateData.symbol,
+      8
     ]);
 
     // init and deploy receiver contract
@@ -49,7 +46,7 @@ describe('CollectionTemplateEditionNFTs', () => {
   describe('NFT collection', async () => {
     it('aex141_extensions', async () => {
       const { decodedResult } = await contract.methods.aex141_extensions();
-      assert.deepEqual(decodedResult, ['mintable_templates', 'mutable_attributes', 'burnable']);
+      assert.deepEqual(decodedResult, ['mintable_templates', 'mintable_templates_limit','mutable_attributes', 'burnable']);
     });
     it('meta_info', async () => {
       const { decodedResult } = await contract.methods.meta_info();
@@ -58,15 +55,22 @@ describe('CollectionTemplateEditionNFTs', () => {
       assert.equal(decodedResult.metadata_type.MAP.length, 0);
       assert.equal(decodedResult.base_url, undefined);
     });
+    it('template_limit', async () => {
+      const { decodedResult } = await contract.methods.template_limit();
+      assert.equal(decodedResult, 8);
+    });
   });
 
-  describe('Template Creation', async () => {
+  describe('Template creation', async () => {
     it('failed template creation', async () => {;
       await expect(
         contract.methods.create_template("ipfs://...", -1, { onAccount: accounts[0] }))
-        .to.be.rejectedWith(`Invocation failed: "EDITION_SIZE_INVALID"`);
+        .to.be.rejectedWith(`Invocation failed: "EDITION_LIMIT_INVALID"`);
       await expect(
-        contract.methods.create_template("ipfs://...", 0, { onAccount: accounts[1] }))
+        contract.methods.create_template("ipfs://...", 0, { onAccount: accounts[0] }))
+        .to.be.rejectedWith(`Invocation failed: "EDITION_LIMIT_INVALID"`);
+      await expect(
+        contract.methods.create_template("ipfs://...", undefined, { onAccount: accounts[1] }))
         .to.be.rejectedWith(`Invocation failed: "ONLY_CONTRACT_OWNER_CALL_ALLOWED"`);
     });
 
@@ -75,25 +79,30 @@ describe('CollectionTemplateEditionNFTs', () => {
         const createTemplateTx =
           await contract.methods.create_template(
             collectionTemplateData.templates[i].immutable_metadata_url,
-            collectionTemplateData.templates[i].edition_size, { onAccount: accounts[0] });
+            collectionTemplateData.templates[i].edition_limit, { onAccount: accounts[0] });
         assert.equal(createTemplateTx.decodedResult, i+1);
-        assert.equal(createTemplateTx.decodedEvents[0].name, 'TemplateCreation');
+        assert.equal(createTemplateTx.decodedEvents[0].name, 'EditionLimit');
         assert.equal(createTemplateTx.decodedEvents[0].args[0], i+1);
-        assert.equal(createTemplateTx.decodedEvents[0].args[1], collectionTemplateData.templates[i].immutable_metadata_url);
-        assert.equal(createTemplateTx.decodedEvents[0].args[2], collectionTemplateData.templates[i].edition_size);
-        logGasUsed('create_template', createTemplateTx);
+        assert.equal(createTemplateTx.decodedEvents[0].args[1], collectionTemplateData.templates[i].edition_limit);
+        assert.equal(createTemplateTx.decodedEvents[1].name, 'TemplateCreation');
+        assert.equal(createTemplateTx.decodedEvents[1].args[0], i+1);
+        assert.equal(createTemplateTx.decodedEvents[1].args[1], collectionTemplateData.templates[i].immutable_metadata_url);
       }
-      
+
       // check template
       let dryRunTemplate = await contract.methods.template(0);
       assert.equal(dryRunTemplate.decodedResult, undefined);
+
+      // check template_supply
+      let dryRunTemplateCount = await contract.methods.template_supply();
+      assert.equal(dryRunTemplateCount.decodedResult, 8);
 
       for(let i=0; i<collectionTemplateData.templates.length; i++) {
         dryRunTemplate = await contract.methods.template(i+1);
         let expectedTemplate = {
           immutable_metadata_url: collectionTemplateData.templates[i].immutable_metadata_url,
-          edition_size: BigInt(collectionTemplateData.templates[i].edition_size),
-          edition_mint_count: BigInt(0)
+          edition_limit: BigInt(collectionTemplateData.templates[i].edition_limit),
+          edition_supply: BigInt(0)
         }
         assert.deepEqual(dryRunTemplate.decodedResult, expectedTemplate);
       }
@@ -120,7 +129,7 @@ describe('CollectionTemplateEditionNFTs', () => {
 
       // mint all nfts
       for(let i=0; i<collectionTemplateData.templates.length; i++) {
-        for(let j=0; j<collectionTemplateData.templates[i].edition_size; j++) {
+        for(let j=0; j<collectionTemplateData.templates[i].edition_limit; j++) {
           const templateMintTx = await contract.methods.template_mint(address, i+1, undefined, { onAccount: accounts[0] });
           totalMintCount++;
           assert.equal(templateMintTx.decodedEvents[0].name, 'TemplateMint');
@@ -129,7 +138,6 @@ describe('CollectionTemplateEditionNFTs', () => {
           assert.equal(templateMintTx.decodedEvents[0].args[2], totalMintCount);
           assert.equal(templateMintTx.decodedEvents[0].args[3], `${j+1}`);
           assert.equal(templateMintTx.decodedResult, totalMintCount);
-          logGasUsed('template_mint', templateMintTx);
         }
       }
 
@@ -162,15 +170,14 @@ describe('CollectionTemplateEditionNFTs', () => {
       assert.deepEqual(metadataDryRun.decodedResult.MetadataMap[0], new Map([['template_id', '8'], ['edition_serial', '8']]));
     });
 
-    it('failed minting - edition size check', async () => {
+    it('failed minting - edition limit check', async () => {
       const address = await accounts[0].address();
       for(let i=0; i<8; i++) {
         await expect(
           contract.methods.template_mint(address, i+1, undefined, { onAccount: accounts[0] }))
-          .to.be.rejectedWith(`Invocation failed: "TEMPLATE_EDITION_SIZE_EXCEEDED"`);
+          .to.be.rejectedWith(`Invocation failed: "EDITION_LIMIT_EXCEEDED"`);
       }
     });
-
 
     it('failed transfer', async () => {
       const from = await accounts[0].address();
@@ -189,7 +196,6 @@ describe('CollectionTemplateEditionNFTs', () => {
       assert.equal(transferTx.decodedEvents[0].args[0], from);
       assert.equal(transferTx.decodedEvents[0].args[1], to);
       assert.equal(transferTx.decodedEvents[0].args[2], totalMintCount);
-      logGasUsed('transfer', transferTx);
 
       // check balances after transfer
       let balanceDryRun = await contract.methods.balance(from);
@@ -219,14 +225,12 @@ describe('CollectionTemplateEditionNFTs', () => {
       assert.equal(burnTx.decodedEvents[0].name, 'Burn');
       assert.equal(burnTx.decodedEvents[0].args[0], await accounts[0].address());
       assert.equal(burnTx.decodedEvents[0].args[1], 1);
-      logGasUsed('burn', burnTx);
 
       // burn again
       burnTx = await contract.methods.burn(totalMintCount, { onAccount: accounts[1] });
       assert.equal(burnTx.decodedEvents[0].name, 'Burn');
       assert.equal(burnTx.decodedEvents[0].args[0], await accounts[1].address());
       assert.equal(burnTx.decodedEvents[0].args[1], totalMintCount);
-      logGasUsed('burn', burnTx);
 
       // check balances after burn
       let balanceDryRun = await contract.methods.balance(await accounts[0].address());
@@ -270,6 +274,239 @@ describe('CollectionTemplateEditionNFTs', () => {
       // check updated attributes
       dryRunMetadata = await contract.methods.metadata(2);
       assert.equal(dryRunMetadata.decodedResult.MetadataMap[0].get('mutable_attributes'), updatedMutableAttributes);
+    });
+  });
+
+  describe('Template interactions', async () => {
+    const fileSystem = utils.getFilesystem(CONTRACT_SOURCE);
+    const source = utils.getContractContent(CONTRACT_SOURCE);
+
+    it('template creation, limit & deletion', async () => {
+      const template_level_contract = await aeSdk.getContractInstance({ source, fileSystem });
+      // deploy contract
+      await template_level_contract.deploy(["template_level_example", "TLE", 2]);
+
+      // check template supply
+      let dryRunTemplateSupply = await template_level_contract.methods.template_supply();
+      assert.equal(dryRunTemplateSupply.decodedResult, 0);
+
+      // create two templates
+      await template_level_contract.methods.create_template("url_placeholder1", undefined, { onAccount: accounts[0] });
+      await template_level_contract.methods.create_template("url_placeholder2", undefined, { onAccount: accounts[0] });
+
+      // should not be possible to create another template
+      await expect(
+        template_level_contract.methods.create_template("url_placeholder3", undefined, { onAccount: accounts[0] }))
+        .to.be.rejectedWith(`Invocation failed: "TEMPLATE_LIMIT_REACHED"`);
+      
+      // check template supply
+      dryRunTemplateSupply = await template_level_contract.methods.template_supply();
+      assert.equal(dryRunTemplateSupply.decodedResult, 2);
+
+      // delete template
+      let deleteTemplateTx = await template_level_contract.methods.delete_template(1, { onAccount: accounts[0] });
+      assert.equal(deleteTemplateTx.decodedEvents[0].name, 'TemplateDeletion');
+      assert.equal(deleteTemplateTx.decodedEvents[0].args[0], 1);
+
+      // cannot delete a template that has already been deleted
+      await expect(
+        template_level_contract.methods.delete_template(1, { onAccount: accounts[0] }))
+        .to.be.rejectedWith(`Invocation failed: "TEMPLATE_ID_NOT_EXISTS"`);
+
+      // check template supply
+      dryRunTemplateSupply = await template_level_contract.methods.template_supply();
+      assert.equal(dryRunTemplateSupply.decodedResult, 1);
+
+      // check template not existing anymore
+      let dryRunTemplate = await template_level_contract.methods.template(1);
+      assert.equal(dryRunTemplate.decodedResult, undefined);
+
+      // create a new templat, should be possible after deletion
+      const createTemplateTx = await template_level_contract.methods.create_template("url_placeholder3", undefined, { onAccount: accounts[0] });
+      assert.equal(createTemplateTx.decodedResult, 3);
+
+      // check template count
+      dryRunTemplateSupply = await template_level_contract.methods.template_supply();
+      assert.equal(dryRunTemplateSupply.decodedResult, 2);
+
+      // check total supply
+      let dryRunTotalSupply = await template_level_contract.methods.total_supply();
+      assert.equal(dryRunTotalSupply.decodedResult, 0);
+
+      // mint an NFT for template with id 3
+      await template_level_contract.methods.template_mint(await accounts[0].address(), 3, undefined, { onAccount: accounts[0] });
+
+      // check total supply
+      dryRunTotalSupply = await template_level_contract.methods.total_supply();
+      assert.equal(dryRunTotalSupply.decodedResult, 1);
+
+      // should not be possible to delete a template after an NFT has been minted based on it
+      await expect(
+        template_level_contract.methods.delete_template(3, { onAccount: accounts[0] }))
+        .to.be.rejectedWith(`Invocation failed: "TEMPLATE_DELETION_NOT_ALLOWED"`);
+    });
+
+    it('template limit changes', async () => {
+      const template_limit_contract = await aeSdk.getContractInstance({ source, fileSystem });
+      // deploy contract
+      await template_limit_contract.deploy(["template_limit_contract_example", "TECE", 3]);
+
+      // create three templates
+      await template_limit_contract.methods.create_template("url_placeholder1", undefined, { onAccount: accounts[0] });
+      await template_limit_contract.methods.create_template("url_placeholder2", undefined, { onAccount: accounts[0] });
+      await template_limit_contract.methods.create_template("url_placeholder3", undefined, { onAccount: accounts[0] });
+
+      // should not be possible to create another template
+      await expect(
+        template_limit_contract.methods.create_template("url_placeholder4", undefined, { onAccount: accounts[0] }))
+        .to.be.rejectedWith(`Invocation failed: "TEMPLATE_LIMIT_REACHED"`);
+
+      // check various conditions for changing the template limit
+      await expect(
+        template_limit_contract.methods.change_template_limit(4, { onAccount: accounts[0] }))
+        .to.be.rejectedWith(`Invocation failed: "TEMPLATE_LIMIT_INCREASE_NOT_ALLOWED"`);
+      await expect(
+        template_limit_contract.methods.change_template_limit(3, { onAccount: accounts[0] }))
+        .to.be.rejectedWith(`Invocation failed: "NO_CHANGE_PROVIDED"`);
+      await expect(
+        template_limit_contract.methods.change_template_limit(2, { onAccount: accounts[0] }))
+        .to.be.rejectedWith(`Invocation failed: "MORE_TEMPLATES_ALREADY_IN_EXISTENCE"`);
+
+      // delete a template
+      await template_limit_contract.methods.delete_template(1, { onAccount: accounts[0] });
+
+      // after deleting a template it should be possible to decrease the limit
+      const changeTemplateLimitTx = await template_limit_contract.methods.change_template_limit(2, { onAccount: accounts[0] });
+      assert.equal(changeTemplateLimitTx.decodedEvents[0].name, 'TemplateLimitChange');
+      assert.equal(changeTemplateLimitTx.decodedEvents[0].args[0], 3);
+      assert.equal(changeTemplateLimitTx.decodedEvents[0].args[1], 2);
+
+      // should not be possible to create another template (again)
+      await expect(
+        template_limit_contract.methods.create_template("url_placeholder4", undefined, { onAccount: accounts[0] }))
+        .to.be.rejectedWith(`Invocation failed: "TEMPLATE_LIMIT_REACHED"`);
+    });
+
+    it('edition level', async () => {
+      const edition_level_contract = await aeSdk.getContractInstance({ source, fileSystem });
+      // deploy contract
+      await edition_level_contract.deploy(["edition_level_example", "TLE", 10]);
+
+      // expect creation of template with invalid edition limit to fail
+      await expect(
+        edition_level_contract.methods.create_template("url_placeholder1", -1, { onAccount: accounts[0] }))
+        .to.be.rejectedWith(`Invocation failed: "EDITION_LIMIT_INVALID"`);
+      await expect(
+        edition_level_contract.methods.create_template("url_placeholder1", 0, { onAccount: accounts[0] }))
+        .to.be.rejectedWith(`Invocation failed: "EDITION_LIMIT_INVALID"`);
+      
+      // creation of template with unlimited edition size
+      let createTemplateTx = await edition_level_contract.methods.create_template("url_placeholder1", undefined, { onAccount: accounts[0] });
+      assert.equal(createTemplateTx.decodedEvents.length, 1);
+      assert.equal(createTemplateTx.decodedEvents[0].name, 'TemplateCreation');
+      assert.equal(createTemplateTx.decodedEvents[0].args[0], 1);
+      assert.equal(createTemplateTx.decodedEvents[0].args[1], "url_placeholder1");
+      // minting various NFTs should be possible
+      for(let i=0; i<5; i++) {
+        await edition_level_contract.methods.template_mint(await accounts[0].address(), 1, undefined, { onAccount: accounts[0] });
+      }
+      // check template
+      let dryRunTemplate = await edition_level_contract.methods.template(1);
+      assert.deepEqual(dryRunTemplate.decodedResult,
+        {
+          immutable_metadata_url: "url_placeholder1",
+          edition_limit: undefined,
+          edition_supply: BigInt(5)
+        });
+
+      // creation of template with edition size 1
+      createTemplateTx = await edition_level_contract.methods.create_template("url_placeholder2", 1, { onAccount: accounts[0] });
+      assert.equal(createTemplateTx.decodedEvents.length, 2); // expecting two events now
+      assert.equal(createTemplateTx.decodedEvents[0].name, 'EditionLimit');
+      assert.equal(createTemplateTx.decodedEvents[0].args[0], 2);
+      assert.equal(createTemplateTx.decodedEvents[0].args[1], 1);
+      // minting the unique NFT based on a template
+      await edition_level_contract.methods.template_mint(await accounts[0].address(), 2, undefined, { onAccount: accounts[0] });
+      // expect another mint of the template to fail
+      await expect(
+        edition_level_contract.methods.template_mint(await accounts[0].address(), 2, undefined, { onAccount: accounts[0] }))
+        .to.be.rejectedWith(`Invocation failed: "EDITION_LIMIT_EXCEEDED"`);
+      // check template
+      dryRunTemplate = await edition_level_contract.methods.template(2);
+      assert.deepEqual(dryRunTemplate.decodedResult,
+        {
+          immutable_metadata_url: "url_placeholder2",
+          edition_limit: BigInt(1),
+          edition_supply: BigInt(1)
+        });
+
+      // creation of template with edition size 3
+      await edition_level_contract.methods.create_template("url_placeholder3", 3, { onAccount: accounts[0] });
+      // mint two NFTs based on template id 3
+      await edition_level_contract.methods.template_mint(await accounts[0].address(), 3, undefined, { onAccount: accounts[0] });
+      await edition_level_contract.methods.template_mint(await accounts[0].address(), 3, undefined, { onAccount: accounts[0] });
+      // check template
+      dryRunTemplate = await edition_level_contract.methods.template(3);
+      assert.deepEqual(dryRunTemplate.decodedResult,
+        {
+          immutable_metadata_url: "url_placeholder3",
+          edition_limit: BigInt(3),
+          edition_supply: BigInt(2)
+        });
+
+      // create new template with unlimited edition size
+      await edition_level_contract.methods.create_template("url_placeholder4", undefined, { onAccount: accounts[0] });
+      // check template
+      dryRunTemplate = await edition_level_contract.methods.template(4);
+      assert.deepEqual(dryRunTemplate.decodedResult,
+        {
+          immutable_metadata_url: "url_placeholder4",
+          edition_limit: undefined,
+          edition_supply: BigInt(0)
+        });
+
+      // mint three NFTs based on template id 4
+      await edition_level_contract.methods.template_mint(await accounts[0].address(), 4, undefined, { onAccount: accounts[0] });
+      await edition_level_contract.methods.template_mint(await accounts[0].address(), 4, undefined, { onAccount: accounts[0] });
+      await edition_level_contract.methods.template_mint(await accounts[0].address(), 4, undefined, { onAccount: accounts[0] });
+      // check template
+      dryRunTemplate = await edition_level_contract.methods.template(4);
+      assert.deepEqual(dryRunTemplate.decodedResult,
+        {
+          immutable_metadata_url: "url_placeholder4",
+          edition_limit: undefined,
+          edition_supply: BigInt(3)
+        });
+
+      // decrease the edition limit
+      const changeEditionLimitTx = await edition_level_contract.methods.change_edition_limit(4, 3, { onAccount: accounts[0] });
+      assert.equal(changeEditionLimitTx.decodedEvents[0].name, 'EditionLimitChange');
+      assert.equal(changeEditionLimitTx.decodedEvents[0].args[0], 4);
+      assert.equal(changeEditionLimitTx.decodedEvents[0].args[1], 0);
+      assert.equal(changeEditionLimitTx.decodedEvents[0].args[2], 3);
+      // check template
+      dryRunTemplate = await edition_level_contract.methods.template(4);
+      assert.deepEqual(dryRunTemplate.decodedResult,
+        {
+          immutable_metadata_url: "url_placeholder4",
+          edition_limit: BigInt(3),
+          edition_supply: BigInt(3)
+        });
+      // expect another mint to fail due to the new limit
+      await expect(
+        edition_level_contract.methods.template_mint(await accounts[0].address(), 4, undefined, { onAccount: accounts[0] }))
+        .to.be.rejectedWith(`Invocation failed: "EDITION_LIMIT_EXCEEDED"`);
+      
+      // expect failed change of edition limit
+      await expect(
+        edition_level_contract.methods.change_edition_limit(4, 4, { onAccount: accounts[0] }))
+        .to.be.rejectedWith(`Invocation failed: "EDITION_LIMIT_INCREASE_NOT_ALLOWED"`);
+      await expect(
+        edition_level_contract.methods.change_edition_limit(4, 3, { onAccount: accounts[0] }))
+        .to.be.rejectedWith(`Invocation failed: "NO_CHANGE_PROVIDED"`);
+      await expect(
+        edition_level_contract.methods.change_edition_limit(4, 2, { onAccount: accounts[0] }))
+        .to.be.rejectedWith(`Invocation failed: "MORE_EDITIONS_ALREADY_IN_EXISTENCE"`);
     });
   });
 });
