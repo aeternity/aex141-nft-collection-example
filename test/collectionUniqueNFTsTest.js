@@ -498,12 +498,12 @@ describe('CollectionUniqueNFTs', () => {
       const receiverContractId = receiverContract.deployInfo.address;
       const receiverContractAddress = receiverContractId.replace("ct_", "ak_");
 
-      // expect claim_from_contract failing as not being called from a contract
+      // expect transfer_to_contract failing as not being called from a contract
       await expect(
-        contract.methods.claim_from_contract(4, { onAccount: accounts[0] }))
+        contract.methods.transfer_to_contract(4, { onAccount: accounts[0] }))
         .to.be.rejectedWith(`Invocation failed: "CALLER_MUST_BE_A_CONTRACT"`);
 
-      // expect transfer_nft_to_contract (which calls claim_from_contract) failing due to missing approval
+      // expect transfer_nft_to_contract (which calls transfer_to_contract) failing due to missing approval
       await expect(
         receiverContract.methods.transfer_nft_to_contract(contract.deployInfo.address, 4, { onAccount: accounts[0] }))
         .to.be.rejectedWith(`Invocation failed: "ONLY_OWNER_APPROVED_OR_OPERATOR_CALL_ALLOWED"`);

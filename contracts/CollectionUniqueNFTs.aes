@@ -92,7 +92,7 @@ contract CollectionUniqueNFTs =
             (true, false) => abort("SAFE_TRANSFER_FAILED")
             _ => Chain.event(Transfer(from, to, token_id))
 
-    stateful entrypoint claim_from_contract(token_id: int) =
+    stateful entrypoint transfer_to_contract(token_id: int) =
         let to = Call.caller
         require(Address.is_contract(to), "CALLER_MUST_BE_A_CONTRACT")
         let from = require_authorized(token_id)
