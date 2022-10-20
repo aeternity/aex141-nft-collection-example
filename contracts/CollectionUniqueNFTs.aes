@@ -10,12 +10,16 @@ include "./core/IAEX141NFTReceiver.aes"
 contract CollectionUniqueNFTs =
 
     datatype event
+        // aex141 default events
         = Transfer(address, address, int) // from, to, token_id
         | Approval(address, address, int, string) // owner, approved_account, token_id, enabled ("true"/"false")
         | ApprovalForAll(address, address, string) // owner, operator, approved ("true"/"false")
+        // mintable extension
         | Mint(address, int) // to, token_id
+        // mintable_limit extension
         | TokenLimit(int) // limit
         | TokenLimitChange(int, int) // old_limit, new_limit
+        // burnable extension
         | Burn(address, int) // owner, token_id
 
     datatype metadata_type = URL | OBJECT_ID | MAP
@@ -37,16 +41,14 @@ contract CollectionUniqueNFTs =
         , operators: map(address, map(address, bool))
         , metadata: map(int, metadata)
         , total_supply: int
-        , token_limit: option(int)
+        , token_limit: int
         , counter: int }
 
-    stateful entrypoint init(name: string, symbol: string, token_limit: option(int)) =
+    stateful entrypoint init(name: string, symbol: string, token_limit: int) =
         require(String.length(name) >= 1, "STRING_TOO_SHORT_NAME")
         require(String.length(symbol) >= 1, "STRING_TOO_SHORT_SYMBOL")
-        if(Option.is_some(token_limit))
-            let limit = Option.force(token_limit)
-            require(limit > 0, "TOKEN_LIMIT_INVALID")
-            Chain.event(TokenLimit(limit))
+        require(token_limit > 0, "TOKEN_LIMIT_INVALID")
+        Chain.event(TokenLimit(token_limit))
         { owner = Contract.creator,
           meta_info = { name = name, symbol = symbol, base_url = None, metadata_type = MAP },
           token_to_owners = {},
@@ -60,7 +62,7 @@ contract CollectionUniqueNFTs =
           counter = 1 }
 
     entrypoint aex141_extensions() : list(string) =
-        ["mintable", "burnable"]
+        ["mintable", "mintable_limit", "burnable"]
 
     entrypoint meta_info() : meta_info =
         state.meta_info
@@ -70,9 +72,6 @@ contract CollectionUniqueNFTs =
 
     entrypoint total_supply() : int =
         state.total_supply
-
-    entrypoint token_limit() : option(int) =
-        state.token_limit
 
     entrypoint balance(owner: address) : option(int) =
         Map.lookup(owner, state.balances)
@@ -134,9 +133,11 @@ contract CollectionUniqueNFTs =
                     None => false
                     Some(v) => v
 
+    // mintable extension
+
     stateful entrypoint mint(to: address, metadata: option(metadata), data: option(string)) : int =  
         require_contract_owner()
-        if(Option.is_some(state.token_limit) && Option.force(state.token_limit) == state.total_supply)
+        if(state.token_limit == state.total_supply)
             abort("TOKEN_LIMIT_REACHED")
         switch(metadata)
             None => abort("NO_METADATA_PROVIDED")
@@ -154,19 +155,24 @@ contract CollectionUniqueNFTs =
                     _ => Chain.event(Mint(to, token_id))
                 token_id
 
+    // mintable_limit extension
+
+    entrypoint token_limit() : int =
+        state.token_limit
+
     stateful entrypoint change_token_limit(new_limit: int) =
         require_contract_owner()
-        switch(state.token_limit)
-            None => abort("TOKEN_LIMIT_CHANGE_NOT_ALLOWED")
-            Some(limit) =>
-                if(new_limit > limit)
-                    abort("TOKEN_LIMIT_INCREASE_NOT_ALLOWED")
-                if(new_limit == limit)
-                    abort("NO_CHANGE_PROVIDED")
-                if(new_limit < state.total_supply)
-                    abort("MORE_TOKENS_ALREADY_IN_EXISTENCE")
-                put(state{token_limit = Some(new_limit)})
-                Chain.event(TokenLimitChange(limit, new_limit))
+        let old_limit = state.token_limit
+        if(new_limit > old_limit)
+            abort("TOKEN_LIMIT_INCREASE_NOT_ALLOWED")
+        if(new_limit == old_limit)
+            abort("NO_CHANGE_PROVIDED")
+        if(new_limit < state.total_supply)
+            abort("MORE_TOKENS_ALREADY_IN_EXISTENCE")
+        put(state{token_limit = new_limit})
+        Chain.event(TokenLimitChange(old_limit, new_limit))
+
+    // burnable extension
 
     stateful entrypoint burn(token_id: int) =
         let owner = require_authorized(token_id)
@@ -178,6 +184,7 @@ contract CollectionUniqueNFTs =
         Chain.event(Burn(owner, token_id))
 
     // not part of AEX-141
+
     entrypoint get_owned_tokens(owner: address) : list(int) =
         Set.to_list(Map.lookup_default(owner, state.owners_to_tokens, Set.new()))
 

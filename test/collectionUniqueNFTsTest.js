@@ -56,7 +56,7 @@ describe('CollectionUniqueNFTs', () => {
   describe('NFT collection', async () => {
     it('aex141_extensions', async () => {
       const { decodedResult } = await contract.methods.aex141_extensions();
-      assert.deepEqual(decodedResult, ['mintable', 'burnable']);
+      assert.deepEqual(decodedResult, ['mintable', 'mintable_limit','burnable']);
     });
     it('meta_info', async () => {
       const { decodedResult } = await contract.methods.meta_info();
