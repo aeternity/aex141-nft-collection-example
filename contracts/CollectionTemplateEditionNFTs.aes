@@ -205,11 +205,11 @@ contract CollectionTemplateEditionNFTs =
 
     stateful entrypoint change_edition_limit(template_id: int, new_limit: int) =
         require_contract_owner()
+        require(new_limit > 0, "EDITION_LIMIT_INVALID")
         let template = Option.force_msg(Map.lookup(template_id, state.templates), "TEMPLATE_ID_NOT_EXISTS")
         let old_limit = switch(template.edition_limit)
             None =>
                 require(template.edition_supply =< new_limit, "MORE_EDITIONS_ALREADY_IN_EXISTENCE")
-                require(new_limit > 0, "EDITION_LIMIT_INVALID")
                 put(state{templates[template_id] @tp = template {edition_limit = Some(new_limit) }})
                 0
             Some(limit) =>
@@ -229,6 +229,7 @@ contract CollectionTemplateEditionNFTs =
         state.template_limit
 
     stateful entrypoint change_template_limit(new_limit: int) =
+        require(new_limit > 0, "TEMPLATE_LIMIT_INVALID")
         require_contract_owner()
         let old_limit = state.template_limit
         if(new_limit > old_limit)

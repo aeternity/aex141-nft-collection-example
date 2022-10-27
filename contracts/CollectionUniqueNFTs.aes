@@ -161,6 +161,7 @@ contract CollectionUniqueNFTs =
         state.token_limit
 
     stateful entrypoint change_token_limit(new_limit: int) =
+        require(new_limit > 0, "TOKEN_LIMIT_INVALID")
         require_contract_owner()
         let old_limit = state.token_limit
         if(new_limit > old_limit)
