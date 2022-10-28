@@ -62,7 +62,9 @@ describe('CollectionUniqueNFTs', () => {
       const { decodedResult } = await contract.methods.meta_info();
       assert.equal(decodedResult.name, collectionUniqueMetadata.name);
       assert.equal(decodedResult.symbol, collectionUniqueMetadata.symbol);
-      assert.equal(decodedResult.metadata_type.MAP.length, 0);
+      assert.notEqual(decodedResult.metadata_type.MAP, undefined);
+      assert.equal(decodedResult.metadata_type.URL, undefined);
+      assert.equal(decodedResult.metadata_type.OBJECT_ID, undefined);
       assert.equal(decodedResult.base_url, undefined);
     });
     it('token_limit', async () => {
@@ -137,18 +139,18 @@ describe('CollectionUniqueNFTs', () => {
         .to.be.rejectedWith(`Invocation failed: "TOKEN_LIMIT_REACHED"`);
     });
 
-    it('failed change_token_limit', async () => {
+    it('failed decrease_token_limit', async () => {
       await expect(
-        contract.methods.change_token_limit(5, { onAccount: accounts[1] }))
+        contract.methods.decrease_token_limit(5, { onAccount: accounts[1] }))
         .to.be.rejectedWith(`Invocation failed: "ONLY_CONTRACT_OWNER_CALL_ALLOWED"`);
       await expect(
-        contract.methods.change_token_limit(9, { onAccount: accounts[0] }))
+        contract.methods.decrease_token_limit(9, { onAccount: accounts[0] }))
         .to.be.rejectedWith(`Invocation failed: "TOKEN_LIMIT_INCREASE_NOT_ALLOWED"`);
       await expect(
-        contract.methods.change_token_limit(8, { onAccount: accounts[0] }))
+        contract.methods.decrease_token_limit(8, { onAccount: accounts[0] }))
         .to.be.rejectedWith(`Invocation failed: "NO_CHANGE_PROVIDED"`);
       await expect(
-        contract.methods.change_token_limit(7, { onAccount: accounts[0] }))
+        contract.methods.decrease_token_limit(7, { onAccount: accounts[0] }))
         .to.be.rejectedWith(`Invocation failed: "MORE_TOKENS_ALREADY_IN_EXISTENCE"`);
     });
 
@@ -547,13 +549,13 @@ describe('CollectionUniqueNFTs', () => {
       assert.deepEqual(getContractToTokenownerDryRun.decodedResult, new Map([[contract.deployInfo.address, new Map()]]));
     });
 
-    it('change_token_limit after burns', async () => {
+    it('decrease_token_limit after burns', async () => {
       // check total supply
       let totalSupplyDryRun = await contract.methods.total_supply();
       assert.equal(totalSupplyDryRun.decodedResult, 4);
 
-      const changeTokenLimitTx = await contract.methods.change_token_limit(5, { onAccount: accounts[0] });
-      assert.equal(changeTokenLimitTx.decodedEvents[0].name, 'TokenLimitChange');
+      const changeTokenLimitTx = await contract.methods.decrease_token_limit(5, { onAccount: accounts[0] });
+      assert.equal(changeTokenLimitTx.decodedEvents[0].name, 'TokenLimitDecrease');
       assert.equal(changeTokenLimitTx.decodedEvents[0].args[0], 8);
       assert.equal(changeTokenLimitTx.decodedEvents[0].args[1], 5);
 

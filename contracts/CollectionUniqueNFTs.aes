@@ -18,7 +18,7 @@ contract CollectionUniqueNFTs =
         | Mint(address, int) // to, token_id
         // mintable_limit extension
         | TokenLimit(int) // limit
-        | TokenLimitChange(int, int) // old_limit, new_limit
+        | TokenLimitDecrease(int, int) // old_limit, new_limit
         // burnable extension
         | Burn(address, int) // owner, token_id
 
@@ -160,7 +160,7 @@ contract CollectionUniqueNFTs =
     entrypoint token_limit() : int =
         state.token_limit
 
-    stateful entrypoint change_token_limit(new_limit: int) =
+    stateful entrypoint decrease_token_limit(new_limit: int) =
         require(new_limit > 0, "TOKEN_LIMIT_INVALID")
         require_contract_owner()
         let old_limit = state.token_limit
@@ -171,7 +171,7 @@ contract CollectionUniqueNFTs =
         if(new_limit < state.total_supply)
             abort("MORE_TOKENS_ALREADY_IN_EXISTENCE")
         put(state{token_limit = new_limit})
-        Chain.event(TokenLimitChange(old_limit, new_limit))
+        Chain.event(TokenLimitDecrease(old_limit, new_limit))
 
     // burnable extension
 

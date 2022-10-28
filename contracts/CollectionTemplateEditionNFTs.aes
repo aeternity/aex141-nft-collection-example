@@ -10,41 +10,48 @@ include "./core/IAEX141NFTReceiver.aes"
 contract CollectionTemplateEditionNFTs =
 
     datatype event
-        // aex141 default events
+        // aex141 default
         = Transfer(address, address, int) // from, to, token_id
         | Approval(address, address, int, string) // owner, approved_account, token_id, enabled ("true"/"false")
         | ApprovalForAll(address, address, string) // owner, operator, approved ("true"/"false")
         // mintable_templates extension
-        | TemplateCreation(int, string) // template_id, immutable_metadata_url
+        | TemplateCreation(int) // template_id
         | TemplateDeletion(int) // template_id
         | TemplateMint(address, int, int, string) // to, template_id, token_id, edition_serial
         | EditionLimit(int, int) // template_id, limit
-        | EditionLimitChange(int, int, int) // template_id, old_limit, new_limit
+        | EditionLimitDecrease(int, int, int) // template_id, old_limit, new_limit
         // mintable_templates_limit extension
         | TemplateLimit(int) // limit
-        | TemplateLimitChange(int, int) // old_limit, new_limit
+        | TemplateLimitDecrease(int, int) // old_limit, new_limit
         // mutable_attributes extension
         | MutableAttributesUpdate(int, string) // token_id, mutable_attributes
         // burnable extension
         | Burn(address, int) // owner, token_id
 
+    // aex141 default
     datatype metadata_type = URL | OBJECT_ID | MAP
     datatype metadata = MetadataIdentifier(string) | MetadataMap(map(string, string))
 
+    // mintable_templates_limit extension
+    datatype template_metadata_type = T_URL | T_MAP
+
+    // aex141 default
     record meta_info =
         { name: string
         , symbol: string
         , base_url: option(string)
         , metadata_type : metadata_type }
 
+    // mintable_templates_limit extension
     record template =
-        { immutable_metadata_url: string
+        { immutable_metadata: metadata
         , edition_limit: option(int)
         , edition_supply: int }
     
     record state =
         { owner: address
         , meta_info: meta_info
+        , template_metadata_type: template_metadata_type
         , templates: map(int, template)
         , template_counter: int
         , template_supply: int
@@ -65,6 +72,7 @@ contract CollectionTemplateEditionNFTs =
         Chain.event(TemplateLimit(template_limit))
         { owner = Contract.creator,
           meta_info = { name = name, symbol = symbol, base_url = None, metadata_type = MAP },
+          template_metadata_type = T_URL,
           templates = {},
           template_counter = 1,
           template_supply = 0,
@@ -152,28 +160,33 @@ contract CollectionTemplateEditionNFTs =
 
     // mintable_templates extension
 
+    entrypoint template_metadata_type() : template_metadata_type =
+        state.template_metadata_type
+
     entrypoint template(template_id: int) : option(template) =
         Map.lookup(template_id, state.templates)
 
     entrypoint template_supply() : int =
         state.template_supply
 
-    stateful entrypoint create_template(immutable_metadata_url: string, edition_limit: option(int)) : int =
+    stateful entrypoint create_template(immutable_metadata: metadata, edition_limit: option(int)) : int =
         require_contract_owner()
-        if(Option.is_some(edition_limit))
-            require(Option.force(edition_limit) > 0, "EDITION_LIMIT_INVALID")
+        switch(immutable_metadata)
+            MetadataMap(_) => require(state.template_metadata_type == T_MAP, "METADATA_TYPE_NOT_ALLOWED")
+            MetadataIdentifier(_) => require(state.template_metadata_type == T_URL, "METADATA_TYPE_NOT_ALLOWED")
+        let template_id = state.template_counter
+        Option.map((limit) =>
+            require(limit > 0, "EDITION_LIMIT_INVALID")
+            Chain.event(EditionLimit(template_id, limit)), edition_limit)
         if(state.template_limit == state.template_supply)
             abort("TEMPLATE_LIMIT_REACHED")
-        let template_id = state.template_counter
         put(state{ template_counter = state.template_counter + 1 
             , templates[template_id] =
-                { immutable_metadata_url = immutable_metadata_url
+                { immutable_metadata = immutable_metadata
                 , edition_limit = edition_limit
                 , edition_supply = 0 }
             , template_supply = state.template_supply + 1 })
-        Chain.event(TemplateCreation(template_id, immutable_metadata_url))
-        if(Option.is_some(edition_limit))
-            Chain.event(EditionLimit(template_id, Option.force(edition_limit)))
+        Chain.event(TemplateCreation(template_id))
         template_id
 
     stateful entrypoint delete_template(template_id: int) =
@@ -187,8 +200,8 @@ contract CollectionTemplateEditionNFTs =
     stateful entrypoint template_mint(to: address, template_id: int, data: option(string)) : int =
         require_contract_owner()
         let template = Option.force_msg(Map.lookup(template_id, state.templates), "TEMPLATE_ID_NOT_EXISTS")
-        if(Option.is_some(template.edition_limit))
-            require(template.edition_supply < Option.force(template.edition_limit), "EDITION_LIMIT_EXCEEDED")
+        Option.map((limit) =>
+            require(template.edition_supply < limit, "EDITION_LIMIT_EXCEEDED"), template.edition_limit)
         let edition_serial = template.edition_supply + 1
         let token_id = state.nft_counter
         put(state{ nft_counter = state.nft_counter + 1
@@ -203,7 +216,7 @@ contract CollectionTemplateEditionNFTs =
             _ => Chain.event(TemplateMint(to, template_id, token_id, Int.to_str(edition_serial)))
         token_id
 
-    stateful entrypoint change_edition_limit(template_id: int, new_limit: int) =
+    stateful entrypoint decrease_edition_limit(template_id: int, new_limit: int) =
         require_contract_owner()
         require(new_limit > 0, "EDITION_LIMIT_INVALID")
         let template = Option.force_msg(Map.lookup(template_id, state.templates), "TEMPLATE_ID_NOT_EXISTS")
@@ -221,14 +234,14 @@ contract CollectionTemplateEditionNFTs =
                     abort("MORE_EDITIONS_ALREADY_IN_EXISTENCE")
                 put(state{templates[template_id] @tp = template {edition_limit = Some(new_limit) }})
                 limit
-        Chain.event(EditionLimitChange(template_id, old_limit, new_limit))
+        Chain.event(EditionLimitDecrease(template_id, old_limit, new_limit))
 
     // mintable_templates_limit extension
 
     entrypoint template_limit() : int =
         state.template_limit
 
-    stateful entrypoint change_template_limit(new_limit: int) =
+    stateful entrypoint decrease_template_limit(new_limit: int) =
         require(new_limit > 0, "TEMPLATE_LIMIT_INVALID")
         require_contract_owner()
         let old_limit = state.template_limit
@@ -239,7 +252,7 @@ contract CollectionTemplateEditionNFTs =
         if(new_limit < state.template_supply)
             abort("MORE_TEMPLATES_ALREADY_IN_EXISTENCE")
         put(state{template_limit = new_limit})
-        Chain.event(TemplateLimitChange(old_limit, new_limit))
+        Chain.event(TemplateLimitDecrease(old_limit, new_limit))
 
     // mutable_attributes extension
 
@@ -253,8 +266,8 @@ contract CollectionTemplateEditionNFTs =
                 let updated_metadata_map =
                     switch(v)
                         MetadataIdentifier(v) => abort("CORRUPT_METADATA")
-                        MetadataMap(v) => MetadataMap(v{["mutable_attributes"]=mutable_attributes})
-                put(state{metadata = state.metadata{[token_id]=updated_metadata_map}})
+                        MetadataMap(v) => MetadataMap(v{["mutable_attributes"] = mutable_attributes})
+                put(state{metadata = state.metadata{[token_id] = updated_metadata_map}})
                 Chain.event(MutableAttributesUpdate(token_id, mutable_attributes))
 
     // burnable extension

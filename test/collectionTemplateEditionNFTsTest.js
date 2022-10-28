@@ -52,7 +52,9 @@ describe('CollectionTemplateEditionNFTs', () => {
       const { decodedResult } = await contract.methods.meta_info();
       assert.equal(decodedResult.name, collectionTemplateData.name);
       assert.equal(decodedResult.symbol, collectionTemplateData.symbol);
-      assert.equal(decodedResult.metadata_type.MAP.length, 0);
+      assert.notEqual(decodedResult.metadata_type.MAP, undefined);
+      assert.equal(decodedResult.metadata_type.URL, undefined);
+      assert.equal(decodedResult.metadata_type.OBJECT_ID, undefined);
       assert.equal(decodedResult.base_url, undefined);
     });
     it('template_limit', async () => {
@@ -64,13 +66,16 @@ describe('CollectionTemplateEditionNFTs', () => {
   describe('Template creation', async () => {
     it('failed template creation', async () => {;
       await expect(
-        contract.methods.create_template("ipfs://...", -1, { onAccount: accounts[0] }))
+        contract.methods.create_template({'MetadataIdentifier': ["ipfs://..."]}, -1, { onAccount: accounts[0] }))
         .to.be.rejectedWith(`Invocation failed: "EDITION_LIMIT_INVALID"`);
       await expect(
-        contract.methods.create_template("ipfs://...", 0, { onAccount: accounts[0] }))
+        contract.methods.create_template({'MetadataIdentifier': ["ipfs://..."]}, 0, { onAccount: accounts[0] }))
         .to.be.rejectedWith(`Invocation failed: "EDITION_LIMIT_INVALID"`);
       await expect(
-        contract.methods.create_template("ipfs://...", undefined, { onAccount: accounts[1] }))
+        contract.methods.create_template({'MetadataMap': [new Map()]}, undefined, { onAccount: accounts[0] }))
+        .to.be.rejectedWith(`Invocation failed: "METADATA_TYPE_NOT_ALLOWED"`);
+      await expect(
+        contract.methods.create_template({'MetadataIdentifier': ["ipfs://..."]}, undefined, { onAccount: accounts[1] }))
         .to.be.rejectedWith(`Invocation failed: "ONLY_CONTRACT_OWNER_CALL_ALLOWED"`);
     });
 
@@ -78,15 +83,14 @@ describe('CollectionTemplateEditionNFTs', () => {
       for(let i=0; i<collectionTemplateData.templates.length; i++) {
         const createTemplateTx =
           await contract.methods.create_template(
-            collectionTemplateData.templates[i].immutable_metadata_url,
+            {'MetadataIdentifier': [collectionTemplateData.templates[i].immutable_metadata_url]},
             collectionTemplateData.templates[i].edition_limit, { onAccount: accounts[0] });
         assert.equal(createTemplateTx.decodedResult, i+1);
-        assert.equal(createTemplateTx.decodedEvents[0].name, 'EditionLimit');
+        assert.equal(createTemplateTx.decodedEvents[0].name, 'TemplateCreation');
         assert.equal(createTemplateTx.decodedEvents[0].args[0], i+1);
-        assert.equal(createTemplateTx.decodedEvents[0].args[1], collectionTemplateData.templates[i].edition_limit);
-        assert.equal(createTemplateTx.decodedEvents[1].name, 'TemplateCreation');
+        assert.equal(createTemplateTx.decodedEvents[1].name, 'EditionLimit');
         assert.equal(createTemplateTx.decodedEvents[1].args[0], i+1);
-        assert.equal(createTemplateTx.decodedEvents[1].args[1], collectionTemplateData.templates[i].immutable_metadata_url);
+        assert.equal(createTemplateTx.decodedEvents[1].args[1], collectionTemplateData.templates[i].edition_limit);
       }
 
       // check template
@@ -100,7 +104,9 @@ describe('CollectionTemplateEditionNFTs', () => {
       for(let i=0; i<collectionTemplateData.templates.length; i++) {
         dryRunTemplate = await contract.methods.template(i+1);
         let expectedTemplate = {
-          immutable_metadata_url: collectionTemplateData.templates[i].immutable_metadata_url,
+          immutable_metadata: {
+            'MetadataIdentifier': [collectionTemplateData.templates[i].immutable_metadata_url]
+          },
           edition_limit: BigInt(collectionTemplateData.templates[i].edition_limit),
           edition_supply: BigInt(0)
         }
@@ -284,19 +290,19 @@ describe('CollectionTemplateEditionNFTs', () => {
     it('template creation, limit & deletion', async () => {
       const template_level_contract = await aeSdk.getContractInstance({ source, fileSystem });
       // deploy contract
-      await template_level_contract.deploy(["template_level_example", "TLE", 2]);
+      await template_level_contract.deploy(['template_level_example', 'TLE', 2]);
 
       // check template supply
       let dryRunTemplateSupply = await template_level_contract.methods.template_supply();
       assert.equal(dryRunTemplateSupply.decodedResult, 0);
 
       // create two templates
-      await template_level_contract.methods.create_template("url_placeholder1", undefined, { onAccount: accounts[0] });
-      await template_level_contract.methods.create_template("url_placeholder2", undefined, { onAccount: accounts[0] });
+      await template_level_contract.methods.create_template({'MetadataIdentifier': ['url_placeholder1']}, undefined, { onAccount: accounts[0] });
+      await template_level_contract.methods.create_template({'MetadataIdentifier': ['url_placeholder2']}, undefined, { onAccount: accounts[0] });
 
       // should not be possible to create another template
       await expect(
-        template_level_contract.methods.create_template("url_placeholder3", undefined, { onAccount: accounts[0] }))
+        template_level_contract.methods.create_template({'MetadataIdentifier': ['url_placeholder3']}, undefined, { onAccount: accounts[0] }))
         .to.be.rejectedWith(`Invocation failed: "TEMPLATE_LIMIT_REACHED"`);
       
       // check template supply
@@ -322,7 +328,7 @@ describe('CollectionTemplateEditionNFTs', () => {
       assert.equal(dryRunTemplate.decodedResult, undefined);
 
       // create a new templat, should be possible after deletion
-      const createTemplateTx = await template_level_contract.methods.create_template("url_placeholder3", undefined, { onAccount: accounts[0] });
+      const createTemplateTx = await template_level_contract.methods.create_template({'MetadataIdentifier': ['url_placeholder3']}, undefined, { onAccount: accounts[0] });
       assert.equal(createTemplateTx.decodedResult, 3);
 
       // check template count
@@ -352,38 +358,38 @@ describe('CollectionTemplateEditionNFTs', () => {
       await template_limit_contract.deploy(["template_limit_contract_example", "TECE", 3]);
 
       // create three templates
-      await template_limit_contract.methods.create_template("url_placeholder1", undefined, { onAccount: accounts[0] });
-      await template_limit_contract.methods.create_template("url_placeholder2", undefined, { onAccount: accounts[0] });
-      await template_limit_contract.methods.create_template("url_placeholder3", undefined, { onAccount: accounts[0] });
+      await template_limit_contract.methods.create_template({'MetadataIdentifier': ['url_placeholder1']}, undefined, { onAccount: accounts[0] });
+      await template_limit_contract.methods.create_template({'MetadataIdentifier': ['url_placeholder2']}, undefined, { onAccount: accounts[0] });
+      await template_limit_contract.methods.create_template({'MetadataIdentifier': ['url_placeholder3']}, undefined, { onAccount: accounts[0] });
 
       // should not be possible to create another template
       await expect(
-        template_limit_contract.methods.create_template("url_placeholder4", undefined, { onAccount: accounts[0] }))
+        template_limit_contract.methods.create_template({'MetadataIdentifier': ['url_placeholder4']}, undefined, { onAccount: accounts[0] }))
         .to.be.rejectedWith(`Invocation failed: "TEMPLATE_LIMIT_REACHED"`);
 
       // check various conditions for changing the template limit
       await expect(
-        template_limit_contract.methods.change_template_limit(4, { onAccount: accounts[0] }))
+        template_limit_contract.methods.decrease_template_limit(4, { onAccount: accounts[0] }))
         .to.be.rejectedWith(`Invocation failed: "TEMPLATE_LIMIT_INCREASE_NOT_ALLOWED"`);
       await expect(
-        template_limit_contract.methods.change_template_limit(3, { onAccount: accounts[0] }))
+        template_limit_contract.methods.decrease_template_limit(3, { onAccount: accounts[0] }))
         .to.be.rejectedWith(`Invocation failed: "NO_CHANGE_PROVIDED"`);
       await expect(
-        template_limit_contract.methods.change_template_limit(2, { onAccount: accounts[0] }))
+        template_limit_contract.methods.decrease_template_limit(2, { onAccount: accounts[0] }))
         .to.be.rejectedWith(`Invocation failed: "MORE_TEMPLATES_ALREADY_IN_EXISTENCE"`);
 
       // delete a template
       await template_limit_contract.methods.delete_template(1, { onAccount: accounts[0] });
 
       // after deleting a template it should be possible to decrease the limit
-      const changeTemplateLimitTx = await template_limit_contract.methods.change_template_limit(2, { onAccount: accounts[0] });
-      assert.equal(changeTemplateLimitTx.decodedEvents[0].name, 'TemplateLimitChange');
+      const changeTemplateLimitTx = await template_limit_contract.methods.decrease_template_limit(2, { onAccount: accounts[0] });
+      assert.equal(changeTemplateLimitTx.decodedEvents[0].name, 'TemplateLimitDecrease');
       assert.equal(changeTemplateLimitTx.decodedEvents[0].args[0], 3);
       assert.equal(changeTemplateLimitTx.decodedEvents[0].args[1], 2);
 
       // should not be possible to create another template (again)
       await expect(
-        template_limit_contract.methods.create_template("url_placeholder4", undefined, { onAccount: accounts[0] }))
+        template_limit_contract.methods.create_template({'MetadataIdentifier': ['url_placeholder4']}, undefined, { onAccount: accounts[0] }))
         .to.be.rejectedWith(`Invocation failed: "TEMPLATE_LIMIT_REACHED"`);
     });
 
@@ -394,18 +400,17 @@ describe('CollectionTemplateEditionNFTs', () => {
 
       // expect creation of template with invalid edition limit to fail
       await expect(
-        edition_level_contract.methods.create_template("url_placeholder1", -1, { onAccount: accounts[0] }))
+        edition_level_contract.methods.create_template({'MetadataIdentifier': ['url_placeholder1']}, -1, { onAccount: accounts[0] }))
         .to.be.rejectedWith(`Invocation failed: "EDITION_LIMIT_INVALID"`);
       await expect(
-        edition_level_contract.methods.create_template("url_placeholder1", 0, { onAccount: accounts[0] }))
+        edition_level_contract.methods.create_template({'MetadataIdentifier': ['url_placeholder1']}, 0, { onAccount: accounts[0] }))
         .to.be.rejectedWith(`Invocation failed: "EDITION_LIMIT_INVALID"`);
       
       // creation of template with unlimited edition size
-      let createTemplateTx = await edition_level_contract.methods.create_template("url_placeholder1", undefined, { onAccount: accounts[0] });
+      let createTemplateTx = await edition_level_contract.methods.create_template({'MetadataIdentifier': ['url_placeholder1']}, undefined, { onAccount: accounts[0] });
       assert.equal(createTemplateTx.decodedEvents.length, 1);
       assert.equal(createTemplateTx.decodedEvents[0].name, 'TemplateCreation');
       assert.equal(createTemplateTx.decodedEvents[0].args[0], 1);
-      assert.equal(createTemplateTx.decodedEvents[0].args[1], "url_placeholder1");
       // minting various NFTs should be possible
       for(let i=0; i<5; i++) {
         await edition_level_contract.methods.template_mint(await accounts[0].address(), 1, undefined, { onAccount: accounts[0] });
@@ -414,17 +419,19 @@ describe('CollectionTemplateEditionNFTs', () => {
       let dryRunTemplate = await edition_level_contract.methods.template(1);
       assert.deepEqual(dryRunTemplate.decodedResult,
         {
-          immutable_metadata_url: "url_placeholder1",
+          immutable_metadata: {
+            'MetadataIdentifier': ['url_placeholder1']
+          },
           edition_limit: undefined,
           edition_supply: BigInt(5)
         });
 
       // creation of template with edition size 1
-      createTemplateTx = await edition_level_contract.methods.create_template("url_placeholder2", 1, { onAccount: accounts[0] });
+      createTemplateTx = await edition_level_contract.methods.create_template({'MetadataIdentifier': ['url_placeholder2']}, 1, { onAccount: accounts[0] });
       assert.equal(createTemplateTx.decodedEvents.length, 2); // expecting two events now
-      assert.equal(createTemplateTx.decodedEvents[0].name, 'EditionLimit');
-      assert.equal(createTemplateTx.decodedEvents[0].args[0], 2);
-      assert.equal(createTemplateTx.decodedEvents[0].args[1], 1);
+      assert.equal(createTemplateTx.decodedEvents[1].name, 'EditionLimit');
+      assert.equal(createTemplateTx.decodedEvents[1].args[0], 2);
+      assert.equal(createTemplateTx.decodedEvents[1].args[1], 1);
       // minting the unique NFT based on a template
       await edition_level_contract.methods.template_mint(await accounts[0].address(), 2, undefined, { onAccount: accounts[0] });
       // expect another mint of the template to fail
@@ -435,13 +442,15 @@ describe('CollectionTemplateEditionNFTs', () => {
       dryRunTemplate = await edition_level_contract.methods.template(2);
       assert.deepEqual(dryRunTemplate.decodedResult,
         {
-          immutable_metadata_url: "url_placeholder2",
+          immutable_metadata: {
+            'MetadataIdentifier': ['url_placeholder2']
+          },
           edition_limit: BigInt(1),
           edition_supply: BigInt(1)
         });
 
       // creation of template with edition size 3
-      await edition_level_contract.methods.create_template("url_placeholder3", 3, { onAccount: accounts[0] });
+      await edition_level_contract.methods.create_template({'MetadataIdentifier': ['url_placeholder3']}, 3, { onAccount: accounts[0] });
       // mint two NFTs based on template id 3
       await edition_level_contract.methods.template_mint(await accounts[0].address(), 3, undefined, { onAccount: accounts[0] });
       await edition_level_contract.methods.template_mint(await accounts[0].address(), 3, undefined, { onAccount: accounts[0] });
@@ -449,18 +458,22 @@ describe('CollectionTemplateEditionNFTs', () => {
       dryRunTemplate = await edition_level_contract.methods.template(3);
       assert.deepEqual(dryRunTemplate.decodedResult,
         {
-          immutable_metadata_url: "url_placeholder3",
+          immutable_metadata: {
+            'MetadataIdentifier': ['url_placeholder3']
+          },
           edition_limit: BigInt(3),
           edition_supply: BigInt(2)
         });
 
       // create new template with unlimited edition size
-      await edition_level_contract.methods.create_template("url_placeholder4", undefined, { onAccount: accounts[0] });
+      await edition_level_contract.methods.create_template({'MetadataIdentifier': ['url_placeholder4']}, undefined, { onAccount: accounts[0] });
       // check template
       dryRunTemplate = await edition_level_contract.methods.template(4);
       assert.deepEqual(dryRunTemplate.decodedResult,
         {
-          immutable_metadata_url: "url_placeholder4",
+          immutable_metadata: {
+            'MetadataIdentifier': ['url_placeholder4']
+          },
           edition_limit: undefined,
           edition_supply: BigInt(0)
         });
@@ -473,14 +486,16 @@ describe('CollectionTemplateEditionNFTs', () => {
       dryRunTemplate = await edition_level_contract.methods.template(4);
       assert.deepEqual(dryRunTemplate.decodedResult,
         {
-          immutable_metadata_url: "url_placeholder4",
+          immutable_metadata: {
+            'MetadataIdentifier': ['url_placeholder4']
+          },
           edition_limit: undefined,
           edition_supply: BigInt(3)
         });
 
       // decrease the edition limit
-      const changeEditionLimitTx = await edition_level_contract.methods.change_edition_limit(4, 3, { onAccount: accounts[0] });
-      assert.equal(changeEditionLimitTx.decodedEvents[0].name, 'EditionLimitChange');
+      const changeEditionLimitTx = await edition_level_contract.methods.decrease_edition_limit(4, 3, { onAccount: accounts[0] });
+      assert.equal(changeEditionLimitTx.decodedEvents[0].name, 'EditionLimitDecrease');
       assert.equal(changeEditionLimitTx.decodedEvents[0].args[0], 4);
       assert.equal(changeEditionLimitTx.decodedEvents[0].args[1], 0);
       assert.equal(changeEditionLimitTx.decodedEvents[0].args[2], 3);
@@ -488,7 +503,9 @@ describe('CollectionTemplateEditionNFTs', () => {
       dryRunTemplate = await edition_level_contract.methods.template(4);
       assert.deepEqual(dryRunTemplate.decodedResult,
         {
-          immutable_metadata_url: "url_placeholder4",
+          immutable_metadata: {
+            'MetadataIdentifier': ['url_placeholder4']
+          },
           edition_limit: BigInt(3),
           edition_supply: BigInt(3)
         });
@@ -499,13 +516,13 @@ describe('CollectionTemplateEditionNFTs', () => {
       
       // expect failed change of edition limit
       await expect(
-        edition_level_contract.methods.change_edition_limit(4, 4, { onAccount: accounts[0] }))
+        edition_level_contract.methods.decrease_edition_limit(4, 4, { onAccount: accounts[0] }))
         .to.be.rejectedWith(`Invocation failed: "EDITION_LIMIT_INCREASE_NOT_ALLOWED"`);
       await expect(
-        edition_level_contract.methods.change_edition_limit(4, 3, { onAccount: accounts[0] }))
+        edition_level_contract.methods.decrease_edition_limit(4, 3, { onAccount: accounts[0] }))
         .to.be.rejectedWith(`Invocation failed: "NO_CHANGE_PROVIDED"`);
       await expect(
-        edition_level_contract.methods.change_edition_limit(4, 2, { onAccount: accounts[0] }))
+        edition_level_contract.methods.decrease_edition_limit(4, 2, { onAccount: accounts[0] }))
         .to.be.rejectedWith(`Invocation failed: "MORE_EDITIONS_ALREADY_IN_EXISTENCE"`);
     });
   });
