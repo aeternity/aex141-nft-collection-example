@@ -41,7 +41,8 @@ export default {
       const aeSdk = this.initSdk();
       const contract = await aeSdk.getContractInstance({
         aci: aex141Aci,
-        contractAddress: "ct_7UNRFTFazecMWA13WzZui6eqwbAit4WEApytasiGcNnWcfUwh",
+        contractAddress:
+          "ct_2QTanakTwkp2p68n3aR296iE2ad4tHH3ov8kRy8ySF4xQuunM8",
       });
 
       this.metaInfo = await contract.methods
@@ -56,7 +57,7 @@ export default {
           const nft_immutable_metadata = await (
             await fetch(
               metadata["MetadataMap"][0]
-                .get("immutable_metadata_url")
+                .get("url")
                 .replace("ipfs://", "https://cloudflare-ipfs.com/ipfs/") // load json with immutable metadata via cloudflare ipfs gateway
             )
           ).json();

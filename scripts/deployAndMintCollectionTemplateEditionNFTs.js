@@ -42,7 +42,8 @@ const collectionTemplateEditionData = require('../nfts/collection_templates.json
     // deploy
     await contract.deploy([
         collectionTemplateEditionData.name,
-        collectionTemplateEditionData.symbol
+        collectionTemplateEditionData.symbol,
+        8
     ]);
     console.log(`Contract successfully deployed!`);
     console.log(`Contract address: ${contract.deployInfo.address}`);
@@ -56,8 +57,8 @@ const collectionTemplateEditionData = require('../nfts/collection_templates.json
     // create templates and mint all nfts
     for(let i=0; i<collectionTemplateEditionData.templates.length; i++) {
         const createTemplateTx = await contract.methods.create_template(
-            collectionTemplateEditionData.templates[i].immutable_metadata_url,
-            collectionTemplateEditionData.templates[i].edition_size, { nonce });
+            {'MetadataIdentifier': [collectionTemplateEditionData.templates[i].immutable_metadata_url]},
+            collectionTemplateEditionData.templates[i].edition_limit, { nonce });
         console.log(`Using nonce: ${nonce}`);
         console.log(`Created template with id '${createTemplateTx.decodedResult}'`);
         console.log(`Tx-Hash: ${createTemplateTx.hash}`);

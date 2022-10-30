@@ -42,7 +42,8 @@ const collectionUniqueMetadata = require('../nfts/collection_unique_nfts.json');
     // deploy
     await contract.deploy([
         collectionUniqueMetadata.name,
-        collectionUniqueMetadata.symbol
+        collectionUniqueMetadata.symbol,
+        8
     ]);
     console.log(`Contract successfully deployed!`);
     console.log(`Contract address: ${contract.deployInfo.address}`);
@@ -53,7 +54,7 @@ const collectionUniqueMetadata = require('../nfts/collection_unique_nfts.json');
 
     const metadataMapAllNFTs = new Array();
     for(let i=0; i<collectionUniqueMetadata.immutable_metadata_urls.length; i++) {
-      metadataMapAllNFTs.push(new Map([['immutable_metadata_url', collectionUniqueMetadata.immutable_metadata_urls[i]]]))
+      metadataMapAllNFTs.push(new Map([['url', collectionUniqueMetadata.immutable_metadata_urls[i]]]))
     }
 
     // define nonce individually
