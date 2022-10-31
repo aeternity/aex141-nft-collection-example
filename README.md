@@ -580,7 +580,7 @@ Gas used: 21493
 
 This repository also provides you an example frontend, the [Simple-NFT-Viewer](./simple-nft-viewer) which is written in Vue.js.
 
-It fetches the NFT metadata from contract [ct_7UNRFTFazecMWA13WzZui6eqwbAit4WEApytasiGcNnWcfUwh](https://explorer.testnet.aeternity.io/contracts/transactions/ct_7UNRFTFazecMWA13WzZui6eqwbAit4WEApytasiGcNnWcfUwh) and displays:
+It fetches the NFT metadata from contract [ct_2QTanakTwkp2p68n3aR296iE2ad4tHH3ov8kRy8ySF4xQuunM8](https://explorer.testnet.aeternity.io/contracts/transactions/ct_2QTanakTwkp2p68n3aR296iE2ad4tHH3ov8kRy8ySF4xQuunM8) and displays:
  - Name of the NFT collection
  - Name, Description and Image of all NFTs
 
