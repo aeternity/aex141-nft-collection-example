@@ -1,4 +1,5 @@
-# aex141-nft-collection-example
+# aex141-nft-collection-example [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/aeternity/aex141-nft-collection-example)
+
 
 This repository will guide you through all the steps required to create an NFT collection and NFTs on the æternity blockchain using the [AEX-141](https://github.com/aeternity/AEXs/blob/master/AEXS/aex-141.md) standard.
 
