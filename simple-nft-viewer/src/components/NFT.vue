@@ -11,7 +11,7 @@
 
 <script>
 import { AeSdk, Node } from "@aeternity/aepp-sdk";
-const aex141Aci = require("../aex141Aci.json");
+const aci = require("../aex141-ACI.json");
 
 function sleep(time) {
   return new Promise((resolve) => setTimeout(resolve, time));
@@ -28,7 +28,6 @@ export default {
   methods: {
     initSdk() {
       return new AeSdk({
-        compilerUrl: "https://compiler.aeternity.io",
         nodes: [
           {
             name: "ae_uat",
@@ -40,7 +39,7 @@ export default {
     async initContract() {
       const aeSdk = this.initSdk();
       const contract = await aeSdk.getContractInstance({
-        aci: aex141Aci,
+        aci,
         contractAddress:
           "ct_2QTanakTwkp2p68n3aR296iE2ad4tHH3ov8kRy8ySF4xQuunM8",
       });
