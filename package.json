@@ -8,11 +8,11 @@
     "test:collectionTemplateEditionNFTsTest": "mocha ./test/collectionTemplateEditionNFTsTest.js --timeout 0 --exit"
   },
   "dependencies": {
-    "@aeternity/aepp-sdk": "^12.1.3",
+    "@aeternity/aepp-sdk": "^13.0.0",
     "axios": "^0.27.2"
   },
   "devDependencies": {
-    "@aeternity/aeproject": "^4.2.1",
+    "@aeternity/aeproject": "^4.6.0",
     "chai": "^4.3.6",
     "chai-as-promised": "^7.1.1",
     "mocha": "^10.0.0"
